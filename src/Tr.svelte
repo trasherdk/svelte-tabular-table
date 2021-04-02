@@ -41,10 +41,13 @@
 	const _total = e => config.keys.length + ( features.checkable ? 1 : 0 ) + ( features.rearrangeable ? 1 : 0 )
 
 	$: total = _total()
-	$: offset = total - config.keys.length
+	$: offset = total - keys.length
 	$: widths = dimensions.widths || []
+	$: colspan = total
 
 	let style = ''
+
+	$: keys = config.keys || []
 
 </script>
 
@@ -52,10 +55,15 @@
 {#if misc.hidden[ id ]}
 
 	<tr bind:this={ misc.els.tr[ id ] }
+		class:stt-hidden={ true }
+		class={ 'stt-'+slugify(id) }
+		data-key={ slugify(id) }
 		{style}>
-		<td colspan={ config.keys.length }>
+		<Td {config} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} {colspan}
+			width={ '100%' }
+			key={'stt-hidden-cell'}>
 			<div style={`height: ${dimensions.row}px`} />
-		</td>
+		</Td>
 	</tr>
 
 {:else}
@@ -67,7 +75,7 @@
 		{#if features.checkable}
 			<Td {config} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} 
 				width={ widths[ 0 ] }
-				key={'svelte-tabular-table-checkable-cell'}>
+				key={'stt-checkable-cell'}>
 				<label 
 					style={special}>
 					<input type="checkbox" 
@@ -82,14 +90,14 @@
 		{#if features.rearrangeable}
 			<Td {config} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type}
 				width={ widths[ offset - 1 ] }
-				key={'svelte-tabular-table-rearrangeable-cell'}>
+				key={'stt-rearrangeable-cell'}>
 				{#if type != 'key'}
 					<div style={special} bind:this={ misc.els.handles[ id ] }>|||</div>
 				{/if}
 			</Td>
 		{/if}
 
-		{#each ( config.keys || [] ) as key, idx}
+		{#each keys as key, idx}
 			<Td {config} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {key} {type} 
 				width={ widths[ offset + idx ] } />
 		{/each}

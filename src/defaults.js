@@ -8,7 +8,6 @@ export const defaults = {
 	render: o => o.value,
 	checked: o => log(`${o.id} -> ${o.event.target.checked ? 'checked' : 'unchecked'}`),
 	sort: (conf, data, meta) => {
-		log( `${meta || ''}sorting data with key ${conf.key}`)
 		data.sort( (a,b) => {
 			const aa = a[conf.key].toLowerCase() || ''
 			const bb = b[conf.key].toLowerCase() || ''

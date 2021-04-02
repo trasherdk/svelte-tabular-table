@@ -6,17 +6,14 @@
 	import queryString from 'query-string'
 	import dragdrop from 'svelte-native-drag-drop'
 	import { fade } from 'svelte/transition'
-	import Tbody from './Tbody.svelte'
 	import { defaults, slugify } from './defaults.js'
 
-	onMount( async () => {
-	})
 
 	function warn( msg ) {
 		console.warn( `[svelte-tabular-table] ${msg}`)
 	}
 	function log( msg ) {
-		console.log( `[svelte-tabular-table] ${msg}`)
+		if (debug) console.log( `[svelte-tabular-table] ${msg}`)
 	}
 	function error( msg ) {
 		console.error( `[svelte-tabular-table] ${msg}`)
@@ -47,6 +44,8 @@
 	export let id = ''
 	export let meta = ''
 
+	onMount( async () => {
+	})
 
 	export let callbacks = {
 
@@ -72,9 +71,8 @@
 			key: null, 
 			direction: false, 
 			sort: defaults.sort
-		}, // <- set the currently sorted thead name with structure { sort: thead name, dir: descend||ascend }
+		}, 
 		rearrangeable: null, // <- callback event for rearranging with integer index (from, to) as arguments
-		selectable: null,
 		checkable: null,
 		autohide: null
 	}
@@ -89,61 +87,11 @@
 			if (o.key) {
 				const d = features.sortable.direction
 				features.sortable.key = o.key
-				log( `sorting with "${o.key}" ${ d ? 'ascending' : 'descending'}`)
+				log( `sorting with "${o.key}" -> ${ d ? 'ascending' : 'descending'}`)
 			}
 		}
 	}
 
-	// export let cards = false // <- show a card for any property named "viz"
-	// export let sortable = null // <- set the currently sorted thead name with structure { sort: thead name, dir: descend||ascend }
-	// export let filled = [] // <- array of booleans for which rows are "filled"
-	// export let rearrangeable = null // <- callback event for rearranging with integer index (from, to) as arguments
-	// export let checkable // <- object of ids holding booleans
-
-	// $: outputUrl = location.hash.split('?')[0] + '?' + queryString.stringify( sortable )
-
-	// let lastLength = 0
-
-
-	// function onColRowsChanged( columns, rows ) {
-	// 	if (!rows) return
-	// 	if (rows.length != lastLength) {
-	// 		lastLength = rows.length
-	// 		hiddenRows = Array( rows.length ).fill( 10 )
-	// 	}
-	// 	refresh = true
-	// 	setTimeout( e => {
-	// 		refresh = false
-	// 		triggerScrollEvent()
-	// 	}, 1)
-	// }
-
-	// $: onColRowsChanged( columns, rows )
-
-	// function onSortClick( key ) {
-	// 	refresh = true
-	// 	if (!sortable) return
-	// 	if ( sortable?.sort == key ) sortable.dir = isDescend ? 'ascend' : 'descend'
-	// 	sortable.sort = key
-	// 	setTimeout( e => {
-	// 		window.location = outputUrl
-	// 		refresh = false
-	// 	}, 1)
-	// }
-
-
-	// function syncColumns( c ) {
-	// 	if (!c) c = []
-	// 	if ( checkable ) c = [ CHECK ].concat( c )
-	// 	if ( rearrangeable ) c = [ REARRANGE ].concat( c )
-
-	// 	return c
-	// }
-	// $: columnsList = syncColumns( columns )
-	// $: rowsCount = ( typeof( rows ) == 'object' ? rows.length : rows ) || 0
-
-
-	// let isDragging = false
 
 
 	let hasDragDrop = false
@@ -174,7 +122,7 @@
 							const fff = config.data.indexOf(ff)
 							const ttt = config.data.indexOf(tt)
 							log(`dragged from ${fff} to ${ttt}`)
-							if ( typeof(rearrangeable) == 'function' ) {
+							if ( typeof(features.rearrangeable) == 'function' ) {
 								features.rearrangeable( fff, ttt )
 							} else {
 								warn(`there is no callback for features.rearrangeable (nothing will happen)`)
@@ -195,30 +143,58 @@
 		}, 1)
 	}
 
+
+
+
+
+
+
+
+
+
+	function onScroll( conf, autohide, dims ) {
+
+		const el = autohide?.container
+		const _ = {
+			scroll: el?.scrollTop || 0,
+			outside: el?.offsetHeight || window.innerHeight,
+			height: dims.row + (dims.padding * 2)
+		}
+
+		let tally = 0
+		const len = (data || []).length
+
+		// console.log( _, '......' )
+
+		for (let i = 0; i < len; i++ ) {
+
+			const item = data[i]
+			const id = item[ conf.index ]
+
+			const offset = _.height * i
+
+			misc.hidden[ id ] = false
+			const extra = _.outside * 0
+
+			console.log(_.scroll, offset, _.height)
+
+			const past = _.scroll > offset + _.height + extra
+			const behind = offset > _.scroll + _.outside + extra
+
+			if ( past ) misc.hidden[id] = _.height
+			if ( behind ) misc.hidden[id] = _.height
+
+			if (misc.hidden[id]) tally += 1
+		}
+
+		log(`${tally}/${len} hidden`)
+	}
+
+	$: onScroll( config, features?.autohide, dimensions )
+
 	$: bindDragDrop( config.data )
 
 
-	// export function triggerScrollEvent( container ) {
-	// 	const scroll = container?.scrollTop || 0
-	// 	const outside = container?.offsetHeight || window.innerHeight
-
-	// 	const extra = window.innerHeight * 2
-
-	// 	let tally = 0
-
-	// 	for (const [idx, tr] of Object.entries(rowEls)) {
-	// 		hiddenRows[idx] = false
-	// 		if (tr) {
-	// 			const offset = tr.offsetTop
-	// 			const height = tr.offsetHeight
-	// 			if ( scroll > offset + height + extra ) hiddenRows[idx] = height
-	// 			if ( offset > scroll + outside + extra ) hiddenRows[idx] = height
-
-	// 			if (hiddenRows[idx]) tally += 1
-	// 		}
-	// 	}
-
-	// }
 
 	// $: bindDragDrop( rowsCount )
 	// $: isDragging = $dragdrop['table']?.dragging

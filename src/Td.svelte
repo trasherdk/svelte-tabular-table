@@ -18,8 +18,9 @@
 
 	export let width
 
-	$: _refresh = misc.refresh ?  ' ' : ''
+	export let colspan = 1
 
+	$: _refresh = misc.refresh ?  ' ' : ''
 
 	$: _style = e => {
 		let s = 'overflow-wrap:break-word;'
@@ -36,7 +37,7 @@
 		margin:0;
 		padding:0;
 		position:relative;
-		${ features?.sortable?.key && type =='key' ? 'cursor:pointer' : ''}
+		${ sorting && type =='key' ? 'cursor:pointer' : ''}
 		${width?`width:${width};`:''}`
 
 	$: hasSlot = $$props.$$slots
@@ -48,21 +49,24 @@
 
 	function onClick(obj, e) {
 		clickFunc( obj, e )
-		if ( type == 'key' && config.keys.indexOf( key ) != -1) {
+		const exists = config.keys.indexOf( key ) != -1
+		if ( type == 'key' && exists && sorting) {
 			misc.reorder( { id, item, key, e} )
 		}
 	}
-	$: sortDirection = features?.sortable?.direction
-	$: isSorted = features?.sortable?.key == key
+	$: sorting = features?.sortable?.key
+	$: direction = features?.sortable?.direction
+	$: same = sorting == key
 </script>
 
 
 
 <td style={tdStyle}
+	{colspan}
 	class={ 'stt-'+slugify( key ) }
-	class:stt-sorted={ isSorted }
-	class:stt-ascending={ isSorted && sortDirection }
-	class:stt-descending={ isSorted && !sortDirection }
+	class:stt-sorted={ same }
+	class:stt-ascending={ same && direction }
+	class:stt-descending={ same && !direction }
 	data-key={ key }
 	on:click={ e => onClick(obj, e) }>
 	<div 
