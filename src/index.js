@@ -1,1 +1,1 @@
-export { default as default } from './Component.svelte';
+export { default as Table } from './Table.svelte';

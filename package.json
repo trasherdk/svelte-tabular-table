@@ -19,5 +19,9 @@
   "files": [
     "src",
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "query-string": "^7.0.0",
+    "svelte-native-drag-drop": "file:../svelte-native-drag-drop"
+  }
 }
