@@ -25,8 +25,8 @@
 	$: _style = e => {
 		let s = 'overflow-wrap:break-word;'
 		const whitespace = 'white-space: nowrap;overflow:hidden;text-overflow: ellipsis;'
-		const em = (dimensions.row || 16) + 'px;'
-		s += 'padding:' + (dimensions.padding || 10) + 'px;'
+		const em = (dimensions.row || defaults.dimensions.row) + 'px;'
+		s += 'padding:' + (dimensions.padding || defaults.dimensions.padding) + 'px;'
 		s += features.autohide || dimensions.row ? whitespace + 'height:' + em  + 'line-height:' + em : '' 
 		return s
 	}

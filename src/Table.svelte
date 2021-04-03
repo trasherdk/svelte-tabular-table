@@ -13,14 +13,35 @@
 		console.warn( `[svelte-tabular-table] ${msg}`)
 	}
 	function log( msg ) {
-		if (debug) console.log( `[svelte-tabular-table] ${msg}`)
+		if (debug) console.log( `[svelte-tabular-table] ${msg} ${ id ? '("' + id + '")' : ''}`)
 	}
 	function error( msg ) {
 		console.error( `[svelte-tabular-table] ${msg}`)
 	}
 
-	function review( config, dimensions, callbacks, features, misc ) {
-		if ( features.autohide && dimensions.row ) warn( 'features.autohide is set, but no height is set for dimensions.row (defaulting to 1em)')
+	function review( config_, dimensions, callbacks, features, misc ) {
+		if ( features.autohide && !dimensions.row ) warn( 'features.autohide is set, but no height is set for dimensions.row (defaulting to 1em)')
+
+		let ids = []
+
+		let tally = { added: 0, duped: 0 }
+		const len = config.data.length
+		for (let i = 0; i < len; i++ ) {
+			if (!config.data[i][config.index]) {
+				const id = 'id' + i
+				warn(`no property "${config.index}" in data item ${i}, defaulting to "${id}"`)
+				config.data[i][config.index] = id
+				tally.added += 1
+			}
+			if ( ids.indexOf( config.data[i][config.index] ) != -1 ) {
+				config.data[i] = {...config.data[i]}
+				while ( ids.indexOf( config.data[i][config.index] ) != -1 ) config.data[i][config.index] += '_dup'
+				tally.duped += 1
+			}
+			ids.push( config.data[i][config.index] )
+		}
+		const activ = tally.duped > 0 || tally.added > 0
+		if (activ ) warn( `${tally.duped}/${len} duplicate keys amended, ${tally.added}/${len} keys added`)
 	}
 
 	$: rev = review( config, dimensions, callbacks, features, misc )
@@ -29,15 +50,11 @@
 	export let config = {
 		keys: [], // array of text or array of objects
 		data: [],
-		index: null
+		index: null,
+		nohead: true
 	}
 
-	export let dimensions = {
-		columns: [],
-		row: null,
-		padding: 10,
-		widths: []
-	}
+	export let dimensions = {...defaults.dimensions}
 
 	export let debug = true
 
@@ -144,77 +161,95 @@
 	}
 
 
-
-
-
-
-
+	let aboveY, belowY, bottomY
 
 
 
 	function onScroll( conf, autohide, dims ) {
 
-		const el = autohide?.container
-		const _ = {
-			scroll: el?.scrollTop || 0,
-			outside: el?.offsetHeight || window.innerHeight,
-			height: dims.row + (dims.padding * 2)
-		}
+		if (!autohide) return
 
-		let tally = 0
+		if (autohide && !dimensions?.row) dimensions.row = defaults.dimensions.row
+		if (autohide && !dimensions?.padding) dimensions.padding = defaults.dimensions.padding
+
+
+		const el = autohide?.container
+		const exists = el != undefined
+		const scroll = autohide?.position || 0
+		const height = dims.row + (dims.padding * 2)
+		const outside = ( el?.offsetHeight || window.innerHeight ) + height
+		const extra = outside * ( autohide?.buffer || 0 )
+
+
+		let tally = { above: 0, below: 0, first: null, last: null }
 		const len = (data || []).length
 
-		// console.log( _, '......' )
+		const to = misc?.els?.table?.offsetTop || 0
+		const eo = el?.offsetTop || 0
+		const off = to - eo
 
 		for (let i = 0; i < len; i++ ) {
 
 			const item = data[i]
 			const id = item[ conf.index ]
 
-			const offset = _.height * i
-
 			misc.hidden[ id ] = false
-			const extra = _.outside * 0
 
-			console.log(_.scroll, offset, _.height)
+			const thead = conf.nohead ? 0 : height
+			const piece = (height * i) + height + thead
 
-			const past = _.scroll > offset + _.height + extra
-			const behind = offset > _.scroll + _.outside + extra
+			const above = scroll > piece + off + extra
+			const below = piece + off > scroll + outside + extra
 
-			if ( past ) misc.hidden[id] = _.height
-			if ( behind ) misc.hidden[id] = _.height
+			if ( ( above || below  ) && exists ) misc.hidden[id] = true
 
-			if (misc.hidden[id]) tally += 1
+			if ( above ) {
+				tally.above += 1
+				tally.first = i
+			}
+			if ( below ) {
+				tally.below += 1
+				if (!tally.last) tally.last = i
+			}
+
 		}
 
-		log(`${tally}/${len} hidden`)
+		const activ = tally.above > 0 || tally.below > 0
+
+		const indicators = false
+
+		if (debug && activ && indicators) {
+			if (!aboveY) {
+				aboveY = document.createElement('div')
+				document.body.appendChild( aboveY ) 
+				belowY = document.createElement('div')
+				document.body.appendChild( belowY ) 
+				bottomY = document.createElement('div')
+				document.body.appendChild( bottomY ) 
+			}
+			const all = `
+				position: absolute;
+				width: 100vw;
+				height: 1px;
+				background: red;
+				display: block;
+				left: 0px;`
+			aboveY.style = `
+				${all}
+				top: ${ eo - scroll }px;`
+			belowY.style = `
+				${all}
+				top: ${ to - scroll }px;`
+			bottomY.style = `
+				${all}
+				top: ${ to - scroll + (misc?.els?.table?.offsetHeight || 0) }px;`
+		}
+
+		if (activ) log(`${outside}px container: ${tally.above}/${len} above, ${tally.below}/${len} below, from ${tally.first} to ${tally.last}, ${len - (tally.above+tally.below)}/${len} visible`)
 	}
 
 	$: onScroll( config, features?.autohide, dimensions )
-
 	$: bindDragDrop( config.data )
-
-
-
-	// $: bindDragDrop( rowsCount )
-	// $: isDragging = $dragdrop['table']?.dragging
-	// $: isDescend = ( sortable?.dir || '' ).indexOf('desc') != -1
-	// $: noWrap = key => ( key == CHECK || key == REARRANGE || key == 'id' ? 'whitespace-nowrap nowrap w1pc cmr0 cptb1 cplr2' : `cptb1 cplr2 ` )
-
-	// let hiddenRows = {}
-
-
-
-	// let rowEls = []
-	// let handles = []
-	// let dropEls = []
-	// let theadEl, tableEl
-
-
-	// let els = { table: null, thead: null, tr: {}, td: {} }
-
-	// const REARRANGE  = 'internal_table_rearrange'
-	// const CHECK = 'internal_table_select'
 
 	function _thead() {
 	
@@ -225,8 +260,6 @@
 	}
 
 	$: thead = _thead()
-
-
 
 	let indeterminate = false
 
@@ -258,10 +291,13 @@
 	data-id={ slugify(id) }
 	style="width:100%;table-layout:fixed;border-spacing:0;">
 
-	<thead>
+	{#if !config.nohead}
+		<thead>
 
-		<Tr {config} {dimensions} {debug} {callbacks} bind:features={features} {misc} item={thead} type={'key'} {indeterminate} />
-	</thead>
+			<Tr {config} {dimensions} {debug} {callbacks} bind:features={features} {misc} item={thead} type={'key'} {indeterminate} />
+		</thead>
+
+	{/if}
 
 	<tbody>
 
