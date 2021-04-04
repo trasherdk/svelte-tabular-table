@@ -19,58 +19,51 @@
 		console.error( `[svelte-tabular-table] ${msg}`)
 	}
 
-	function review( config_, dimensions, callbacks, features, misc ) {
+	function review( init_, dimensions, callbacks, features, misc ) {
 		if ( features.autohide && !dimensions.row ) warn( 'features.autohide is set, but no height is set for dimensions.row (defaulting to 1em)')
 
 		let ids = []
 
 		let tally = { added: 0, duped: 0 }
-		const len = config.data.length
+		const len = init.data.length
 		for (let i = 0; i < len; i++ ) {
-			if (!config.data[i][config.index]) {
+			if (!init.data[i][init.index]) {
 				const id = 'id' + i
-				warn(`no property "${config.index}" in data item ${i}, defaulting to "${id}"`)
-				config.data[i][config.index] = id
+				warn(`no property "${init.index}" in data item ${i}, defaulting to "${id}"`)
+				init.data[i][init.index] = id
 				tally.added += 1
 			}
-			if ( ids.indexOf( config.data[i][config.index] ) != -1 ) {
-				config.data[i] = {...config.data[i]}
-				while ( ids.indexOf( config.data[i][config.index] ) != -1 ) config.data[i][config.index] += '_dup'
+			if ( ids.indexOf( init.data[i][init.index] ) != -1 ) {
+				init.data[i] = {...init.data[i]}
+				while ( ids.indexOf( init.data[i][init.index] ) != -1 ) init.data[i][init.index] += '_dup'
 				tally.duped += 1
 			}
-			ids.push( config.data[i][config.index] )
+			ids.push( init.data[i][init.index] )
 		}
 		const activ = tally.duped > 0 || tally.added > 0
 		if (activ ) warn( `${tally.duped}/${len} duplicate keys amended, ${tally.added}/${len} keys added`)
 	}
 
-	$: rev = review( config, dimensions, callbacks, features, misc )
+	$: rev = review( init, dimensions, callbacks, features, misc )
 
 
-	export let config = {
+	export let init = {
 		keys: [], // array of text or array of objects
 		data: [],
 		index: null,
-		nohead: true
+		nohead: false,
+		nodiv: false
 	}
 
 	export let dimensions = {...defaults.dimensions}
-
 	export let debug = true
-
 	export let id = ''
-	export let meta = ''
 
 	onMount( async () => {
 	})
 
 	export let callbacks = {
 
-		hover: {
-			key: e => e,
-			row: e => e,
-			cell: e => e
-		},
 		click: {
 			key: defaults.click,
 			row: defaults.click,
@@ -134,10 +127,10 @@
 						try {
 							const f = e.source.getAttribute('data-key')
 							const t = e.destination.getAttribute('data-key')
-							const ff = config.data.find( d => d[config.index] == f )
-							const tt = config.data.find( d => d[config.index] == t )
-							const fff = config.data.indexOf(ff)
-							const ttt = config.data.indexOf(tt)
+							const ff = init.data.find( d => d[init.index] == f )
+							const tt = init.data.find( d => d[init.index] == t )
+							const fff = init.data.indexOf(ff)
+							const ttt = init.data.indexOf(tt)
 							log(`dragged from ${fff} to ${ttt}`)
 							if ( typeof(features.rearrangeable) == 'function' ) {
 								features.rearrangeable( fff, ttt )
@@ -165,7 +158,7 @@
 
 
 
-	function onScroll( conf, autohide, dims ) {
+	function onScroll( init_, autohide, dims ) {
 
 		if (!autohide) return
 
@@ -191,11 +184,11 @@
 		for (let i = 0; i < len; i++ ) {
 
 			const item = data[i]
-			const id = item[ conf.index ]
+			const id = item[ init.index ]
 
 			misc.hidden[ id ] = false
 
-			const thead = conf.nohead ? 0 : height
+			const thead = init.nohead ? 0 : height
 			const piece = (height * i) + height + thead
 
 			const above = scroll > piece + off + extra
@@ -248,15 +241,15 @@
 		if (activ) log(`${outside}px container: ${tally.above}/${len} above, ${tally.below}/${len} below, from ${tally.first} to ${tally.last}, ${len - (tally.above+tally.below)}/${len} visible`)
 	}
 
-	$: onScroll( config, features?.autohide, dimensions )
-	$: bindDragDrop( config.data )
+	$: onScroll( init, features?.autohide, dimensions )
+	$: bindDragDrop( init.data )
 
 	function _thead() {
 	
-		return config.keys.reduce(function(result, item, index) {
+		return init.keys.reduce(function(result, item, index) {
 				result[item] = item
 				return result
-		}, { [ config.index ]: 'svelte-tabular-table-thead' })
+		}, { [ init.index ]: 'svelte-tabular-table-thead' })
 	}
 
 	$: thead = _thead()
@@ -266,8 +259,8 @@
 	function isIndeterminate( checkable ) {
 		let yes = false
 		let no = false
-		for (let i = 0; i < config.data.length; i++) {
-			const id = config.data[i][config.index]
+		for (let i = 0; i < init.data.length; i++) {
+			const id = init.data[i][init.index]
 			if ( (features.checkable || [])[id] ) yes = true
 			if ( !(features.checkable || [])[id] ) no = true
 		}
@@ -280,7 +273,7 @@
 	$: isIndeterminate( features.checkable )
 
 	$: sort = features?.sortable?.sort || defaults.sort
-	$: data = (features?.sortable?.key) ? sort( features.sortable, [...config.data], id ) : config.data
+	$: data = (features?.sortable?.key) ? sort( features.sortable, [...init.data], id ) : init.data
 
 </script>
 
@@ -291,10 +284,10 @@
 	data-id={ slugify(id) }
 	style="width:100%;table-layout:fixed;border-spacing:0;">
 
-	{#if !config.nohead}
+	{#if !init.nohead}
 		<thead>
 
-			<Tr {config} {dimensions} {debug} {callbacks} bind:features={features} {misc} item={thead} type={'key'} {indeterminate} />
+			<Tr {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} item={thead} type={'key'} {indeterminate} />
 		</thead>
 
 	{/if}
@@ -302,7 +295,7 @@
 	<tbody>
 
 		{#each data as item, idx }
-			<Tr {config} {dimensions} {debug} {callbacks} bind:features={features} {misc} {item} type={'cell'} />
+			<Tr {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} {item} type={'cell'} />
 
 		{/each}
 	</tbody>

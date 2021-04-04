@@ -1,63 +1,47 @@
 <script>
+	import TurndownService from 'turndown'
+	import { tables } from 'turndown-plugin-gfm'
+
 	import { Table, slugify } from './../../src/index.js'
+	import Auto from './Auto.svelte'
 	import data from './data.js'
+	import docs from './docs.js'
 
-	const css = `
-<style>
-	html, body {
-		padding: 0;
-		font-family: sans-serif;
-		line-height: 1.8em;
-		font-size: 14px;
-	}
-	body {
-		padding: 2em 6em;
-	}
-	tr td {
-		box-shadow: 0px 1px lightgrey;
-	}
-	thead td.stt-ascending div:after {
-		content: '(asc)';
-	}
+	let turndown = new TurndownService( { preformattedCode: true } )
+	turndown.use(tables)
 
-	thead td.stt-descending div:after {
-		content: '(desc)';
-	} 
-</style>
-	`
 
 	const keys = ['name', 'company', 'about' ]
 
 	let many = []
 	for (let i = 0; i < 100; i++) many = many.concat( data )
 
-	const tables = [
+	const all = [
 
 		{
 			id: 'Basic',
-			meta: `
-				Basic configuration:
-				<ul>
-					<li><code>config.data</code> - an array of objects comprising the rows</li>
-					<li><code>config.keys</code> - an array of keys to define columns </li>
-					<li><code>config.index</code> - the key used for indexing each row *</li>
-				</ul>
-				* If no valid <code>config.index</code> is set, or if there are duplicate values inside data, the table will attempt to generate unique keys.
-
-			`,
-			config: {
+			init: {
 				keys: ['name', 'balance', 'address', 'company'],
 				index: '_id',
 				data
 			}
+		}, 
+		{
+			id: 'Dimensions',
+			init: {
+				keys: ['age', 'latitude', 'longitude', 'name', 'about'],
+				index: '_id',
+				data
+			},
+			dimensions: {
+				row: 14,
+				padding: 0,
+				widths: [50,100,100,150]
+			}
 		},
 		{
 			id: 'Sortable',
-			meta: `
-				Sortable headers can be initialised by setting <code>features.sortable.key</code> to an initial value and <code>features.sortable.direction</code> to <code>"ascending"</code> or <code>"descending"</code>.
-
-			`,
-			config: {
+			init: {
 				keys: ['name', 'balance', 'company', 'latitude', 'longitude', 'tags'],
 				index: '_id',
 				data
@@ -70,13 +54,13 @@
 		},
 		{
 			id: 'Checkable',
-			meta: `
-				Checkable rows are initialised by passing a blank <code>{}</code> object to <code>features.checkable</code>, which will be set via <code>config.index</code>.
-			`,
-			config: {
-				keys,
+			init: {
+				keys: ['name', 'balance', 'company', 'email', 'tags'],
 				index: '_id',
 				data
+			},
+			dimensions: {
+				widths: [ 100, 200, 100, 200 ]
 			},
 			features: {
 				checkable: {}
@@ -84,33 +68,31 @@
 		},
 		{
 			id: 'Rearrangeable',
-			meta: `
-				Rearrangeable rows are initialised by passing a callback function to <code>features.rearrangeable</code>, which will return the <em>from</em> and <em>to</em> indexes as an integer: <code>( from, to ) => ...</code> 
-			`,
-			config: {
+			init: {
 				keys: ['name', 'balance', 'company'],
 				index: '_id',
 				data
 			},
 			features: {
 				rearrangeable: (from, to) => alert(`from ${from} to ${to}`)
-			},
-			code: `
-				config: {
-					keys: ['name', 'balance', 'company'],
-					index: '_id',
-					data
-				},
-				features: {
-					rearrangeable: (from, to) => alert(\`from \${from} to \${to}\`)
-				}
-			`
+			}
 		},
 		{
-			id: 'Autohide',
-			meta: 'Useful for large datasets or lists that render images and video.',
-			config: {
-				keys,
+			id: 'Autohide (1)',
+			init: {
+				keys: ['name', 'balance', 'company', 'latitude', 'longitude', 'tags'],
+				index: '_id',
+				data: many,
+				nohead: true
+			},
+			dimensions: {
+				row: 16
+			}
+		},
+		{
+			id: 'Autohide (2)',
+			init: {
+				keys: ['name', 'balance', 'company', 'latitude', 'longitude', 'tags'],
 				index: '_id',
 				data: many,
 				nohead: true
@@ -121,15 +103,33 @@
 		},
 		{
 			id: 'Callbacks',
-			config: {
-				keys,
+			init: {
+				keys: ['name', 'balance', 'company', 'latitude', 'longitude'],
 				index: '_id',
 				data
 			},
 			callbacks: {
 				render: {
-					cell: o => '🌱  <small>This is an HTML String:</small> ' + o.value + '  🌱',
-					key: o => '🌲  <small>key</small> ' + o.value + '  🌲',
+					cell: o => ['🌱','☘️','🥬','🌿','🥒'][o.index] ,
+					key: o => ['🌴','🌲','🌳','🏔','🥦'][o.index],
+				},
+				click: {
+					cell: o => alert( ['🌴','🌲','🌳','🏔','🥦'][o.index] ) ,
+					key: o => alert( ['🌱','☘️','🥬','🌿','🥒'][o.index] ),
+				}
+			}
+		},
+		{
+			id: 'Components',
+			init: {
+				keys: ['picture', 'name', 'latitude', 'longitude', 'registered', 'about'],
+				index: '_id',
+				data
+			},
+			callbacks: {
+				render: {
+					cell: Auto,
+					key: Auto,
 				}
 			}
 		},
@@ -137,62 +137,176 @@
 
 	]
 
+
 	const scroller = `
 		width:100%;
 		height:400px;
 		overflow:auto;
-		border: 1px solid lightgrey;`
+		border: 1px solid black;`
 
 
-	let autoEl, autoTop
 
-	$: autohide = {
-		container: autoEl,
-		position: autoTop,
-		buffer: 1
+	let autohide = {
+		'Autohide (1)' : {
+			container: window,
+			position: 0,
+			buffer: -0.1
+		},
+		'Autohide (2)' : {
+			container: null,
+			position: 0,
+			buffer: 2
+		}
+	}
+
+	let code = false
+	let nav = window.location.hash.substring(1)
+	if (nav == '') nav = 'basic'
+	window.addEventListener( 'hashchange', e => nav = window.location.hash.substring(1) )
+	let markdown = false
+	let mdEl, apiEl
+	if (nav == 'markdown') markdown = true
+
+
+	async function grab() {
+		let str = turndown.turndown( mdEl.outerHTML )
+		if (!navigator.clipboard) return
+		await navigator.clipboard.writeText( str )
+		alert('markdown copied')
+	}
+
+	function getID( table, idx, no ) {
+		let s = `Example ${idx + 1} - ${table.id}${no ? '' : ' 🔗'}`
+		if (no) return s
+		return slugify( s )
 	}
 
 </script>
 
-<main style="max-width: 1200px;margin: 0 auto;">
-	{@html css}
-	<h1>Svelte Tabular Table</h1>
-	<p>Fully-featured, lightweight table component for Svelte.</p>
-	<div style="display:flex">
-		<div style="flex-basis:0;flex-grow:1;margin-right:2em">
-			<h2>Raw Boilerplate</h2>
-			<p>All the hard stuff is done - <span>rearrangeable, checkable, orderable, and autohide</span> (for large datasets, images etc).</p>
-		</div>
-		<div style="flex-basis:0;flex-grow:1;margin-right:2em">
-			<h2>No CSS, No Chuff</h2>
-			<p>Core properties are inlined onto the table with no extra styling. Utility classes prepended with <code>stt</code>.</p>
-			<!-- <code style="font-size:10px">{css}</code> -->
-		</div>
-		<div style="flex-basis:0;flex-grow:1;margin-right:2em">
-			<h2>Sane Configuration</h2>
-			<p>Based around 4 categories - config, dimensions, features, callbacks - keep it simple, stupid.</p>
-		</div>
-	</div>
-	<h1>Examples</h1>
-	{#each tables as table,idx}
-		<p>
-			<a href={'#stt-title-'+slugify(table.id)}>Example {idx + 1} - {table.id}</a>
-		</p>
-	{/each}
-	{#each tables as table, idx}
-		<h2 id={'stt-title-'+slugify(table.id)} >Example {idx + 1} - {table.id}</h2>
-		<p>{@html table.meta || ''}</p>
+<svelte:window on:scroll={ e => autohide[ 'Autohide (1)' ].position = window.scrollY } />
+<main style="max-width: 1200px;margin: 0 auto;padding-bottom: 2em;">
 
-		{#if table.id == 'Autohide'}
-			<div 
-				bind:this={ autoEl }
-				on:scroll={ e => autoTop = e.target.scrollTop }
-				style={scroller}>
-				<p style="padding: 4em 1em;text-align: center;">Automatically calculates internal offset inside container (ie. this paragraph).</p>
-				<Table { ...table } features={ { autohide } } />
+
+	{#if markdown}
+		<div bind:this={mdEl}>
+			{@html docs['Intro']}
+			<ul>
+				<li><a target="_blank" href="https://autr.github.io/svelte-tabular-table">Live Examples 🔗</a></li>
+				{#each all as table, idx}
+					<li><a href={'#'+getID( table, idx )}>{getID( table, idx, true )}</a></li>
+				{/each}
+				<li><a href="#api-documentation">API Documentation</a></li>
+			</ul>
+			{#each all as table, idx}
+
+				<h1 id={getID( table, idx )}>
+					<a target="_blank" href={`https://autr.github.io/svelte-tabular-table#${slugify(table.id)}`}>{getID( table, idx, true )} 🔗</a>
+				</h1>
+				<p>{@html docs[ table.id ]?.meta || ''}</p>
+				<pre>
+					<code>
+						{ docs[table.id]?.code }
+					</code>
+				</pre>
+			{/each}
+
+			<h1 id="api">
+				API Documentation
+			</h1>
+			<Table init={{
+				data: docs['API'],
+				keys: ['name', 'types', 'example', 'description'],
+				index: 'name',
+				nodiv: true
+			}} callbacks={{
+				render: {
+					cell: o => o.value
+				}
+			}} />
+		</div>
+
+	{:else}
+		{@html docs['Intro']}
+		{@html docs['Advert']}
+		<div class="row" style="margin: 1em 0em">
+			{#each all as table,idx}
+				<a class="opt" class:fill={ nav == slugify(table.id)} href={'#'+slugify(table.id)}>Example {idx + 1} - {table.id}</a>
+			{/each}
+			<a class="opt" class:fill={ nav == 'api'} href={'#api'}>API Documentation</a>
+
+		</div>
+
+		{#each all as table, idx}
+			<div class:hidden={ nav != slugify(table.id) } style="margin: 3em 0em">
+				<h1>
+					Example {idx + 1} - {table.id}
+					<code 
+						class:filled={code}
+						on:click={e => code = !code }
+						class="cc">{'</>'}</code>
+				</h1>
+				<p>{@html docs[ table.id ]?.meta || ''}</p>
+
+				{#if code && docs[table.id] }
+
+					<pre>
+						<code>
+							{ docs[table.id]?.code }
+						</code>
+					</pre>
+
+				{:else}
+					<p>No config to view.</p>
+				{/if}
+
+				<div class:hidden={code}>
+					{#if table.id.indexOf('Autohide (1)') != -1}
+						<Table { ...table } features={ { autohide: autohide[ table.id ] } } />
+					{:else if table.id.indexOf('Autohide (2)') != -1}
+						<div 
+							bind:this={ autohide[ table.id ].container }
+							on:scroll={ e => autohide[ table.id ].position = e.target.scrollTop }
+							style={scroller}>
+							<p style="padding: 4em 1em;text-align: center;">Autohide automatically calculates internal offset inside container (ie. this paragraph).</p>
+							<Table { ...table } features={ { autohide: autohide[ table.id ] } } />
+						</div>
+					{:else}
+						<Table {...table} />
+					{/if}
+				</div>
+
+
 			</div>
-		{:else}
-			<Table {...table} />
-		{/if}
-	{/each}
+		{/each}
+
+
+		<div class:hidden={ nav != 'api' }>
+			<h1>
+				API Documentation
+			</h1>
+			<Table init={{
+				data: docs['API'],
+				keys: ['name', 'types', 'example', 'description'],
+				index: 'name'
+			}} dimensions={{
+				widths: [ 250, 220 ]
+			}} callbacks={{
+				render: {
+					cell: o => {
+						if (o.key == 'types' || o.key == 'description') return `
+							<span>${o.value}</span>
+						`
+						return `<span style="font-family:monospace;">${o.value}</span>`
+					}
+				}
+			}} />
+		</div>
+	{/if}
+	<div style="display:flex;justify-content: space-between;">
+		<p>Created by <a target="_blank" href="https://autr.tv">G.Sinnott</a> { (new Date()).getFullYear()} MIT</p>
+		<p>
+			<a style="cursor:pointer" on:click={e => markdown = !markdown}>MD</a> |
+			<a style="cursor:pointer" on:click={grab}>GB</a>
+		</p>
+	</div>
 </main>

@@ -15,7 +15,7 @@ export default [
     "phone": "+1 (806) 592-3968",
     "address": "468 Boardwalk , Neibert, Hawaii, 8315",
     "about": "Consequat adipisicing in aute id quis in. \r\n",
-    "registered": "2017-10-26T06:21:03 -02:00",
+    "registered": "2017-10-26T06:21:03-02:00",
     "latitude": -21.940819,
     "longitude": 30.201564,
     "tags": [
@@ -60,7 +60,7 @@ export default [
     "phone": "+1 (886) 468-3027",
     "address": "438 Abbey Court, Joppa, Illinois, 6251",
     "about": "Sit tempor irure ipsum officia aliquip officia. \r\n",
-    "registered": "2018-12-01T06:53:16 -01:00",
+    "registered": "2018-12-01T06:53:16-01:00",
     "latitude": 42.076816,
     "longitude": 86.747389,
     "tags": [
@@ -105,7 +105,7 @@ export default [
     "phone": "+1 (854) 547-3734",
     "address": "743 Grace Court, Bentley, New Mexico, 2413",
     "about": "Ut cillum ex reprehenderit dolore. Deserunt deserunt voluptate velit magna aliqua. \r\n",
-    "registered": "2021-02-11T08:10:59 -01:00",
+    "registered": "2021-02-11T08:10:59-01:00",
     "latitude": -10.372481,
     "longitude": -179.369724,
     "tags": [
@@ -150,7 +150,7 @@ export default [
     "phone": "+1 (887) 598-2324",
     "address": "435 Love Lane, Sattley, Federated States Of Micronesia, 3721",
     "about": "Dolore laboris nulla ullamco adipisicing. Est fugiat minim sunt et incididunt. ",
-    "registered": "2015-03-05T07:22:25 -01:00",
+    "registered": "2015-03-05T07:22:25-01:00",
     "latitude": -42.652911,
     "longitude": 170.969049,
     "tags": [
@@ -195,7 +195,7 @@ export default [
     "phone": "+1 (831) 471-2578",
     "address": "999 Thatford Avenue, Dowling, Wyoming, 4147",
     "about": "Do proident fugiat ullamco nulla ut mollit mollit aute. Fugiat ea ad ex commodo Lorem eiusmod labore ea Lorem eu excepteur. ",
-    "registered": "2016-07-22T10:15:05 -02:00",
+    "registered": "2016-07-22T10:15:05-02:00",
     "latitude": 54.305557,
     "longitude": 156.332766,
     "tags": [
@@ -240,7 +240,7 @@ export default [
     "phone": "+1 (856) 464-3756",
     "address": "778 Kane Street, Harrodsburg, Missouri, 8650",
     "about": "Proident aliqua ex est velit culpa officia quis amet id in Lorem. Duis ea excepteur esse laboris duis aute tempor. ",
-    "registered": "2015-03-21T10:36:32 -01:00",
+    "registered": "2015-03-21T10:36:32-01:00",
     "latitude": 20.947055,
     "longitude": 73.043118,
     "tags": [
@@ -285,7 +285,7 @@ export default [
     "phone": "+1 (837) 557-2562",
     "address": "941 Brighton Avenue, Choctaw, Palau, 1978",
     "about": "Commodo elit duis cupidatat ad sit cupidatat ex dolor. Ex ut in culpa duis sit proident eiusmod.",
-    "registered": "2020-04-17T02:16:58 -02:00",
+    "registered": "2020-04-17T02:16:58-02:00",
     "latitude": -23.040839,
     "longitude": -84.524142,
     "tags": [
@@ -330,7 +330,7 @@ export default [
     "phone": "+1 (964) 418-3744",
     "address": "436 Conover Street, Robinette, Connecticut, 1742",
     "about": "Fugiat tempor occaecat occaecat sint veniam irure sunt quis enim. Exercitation laboris occaecat adipisicing id officia sint commodo velit fugiat. ",
-    "registered": "2018-10-25T09:36:27 -02:00",
+    "registered": "2018-10-25T09:36:27-02:00",
     "latitude": -60.842289,
     "longitude": 35.306672,
     "tags": [
@@ -375,7 +375,7 @@ export default [
     "phone": "+1 (869) 458-2419",
     "address": "583 Chauncey Street, Siglerville, Utah, 7059",
     "about": "Consectetur excepteur eu ex amet nisi non aute nostrud magna irure non ad. Consequat veniam consequat Lorem consectetur do est consectetur est pariatur eu elit ad. ",
-    "registered": "2019-09-03T01:49:05 -02:00",
+    "registered": "2019-09-03T01:49:05-02:00",
     "latitude": 82.846036,
     "longitude": 154.454805,
     "tags": [

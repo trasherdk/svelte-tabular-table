@@ -1,5 +1,13 @@
 {
   "name": "svelte-tabular-table",
+  "version": "1.0.0",
+  "description": "Fully-featured, lightweight table component for Svelte JS",
+  "author": "G.Sinnott",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/autr/svelte-tabular-table/issues"
+  },
+  "homepage": "https://autr.github.io/svelte-tabular-table",
   "svelte": "src/index.js",
   "module": "dist/index.mjs",
   "main": "dist/index.js",
@@ -14,7 +22,10 @@
     "svelte": "^3.0.0"
   },
   "keywords": [
-    "svelte"
+    "svelte",
+    "table",
+    "tabular",
+    "spreadsheets"
   ],
   "files": [
     "src",

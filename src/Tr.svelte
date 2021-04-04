@@ -2,7 +2,7 @@
 	import Td from './Td.svelte'
 	import { defaults, slugify } from './defaults.js'
 
-	export let config
+	export let init
 	export let dimensions
 	export let debug
 	export let callbacks
@@ -13,12 +13,12 @@
 
 	export let indeterminate = false
 
-	$:id = item[ config?.index ] || config.data.indexOf(item)
+	$:id = item[ init?.index ] || init.data.indexOf(item)
 
 	function onChecked( event ) {
 		if ( type == 'key' ) {
-			for (let i = 0; i < config.data.length; i++) {
-				const id = config.data[i][config.index]
+			for (let i = 0; i < init.data.length; i++) {
+				const id = init.data[i][init.index]
 				features.checkable[id] = event.target.checked
 			}
 		} else {
@@ -36,18 +36,19 @@
 		width:100%;
 		height:100%;
 		display:flex;
+		box-sizing: border-box;
+		padding: ${(dimensions.padding || defaults.dimensions.padding)}px;
 		align-items:center;`
 
-	const _total = e => config.keys.length + ( features.checkable ? 1 : 0 ) + ( features.rearrangeable ? 1 : 0 )
+	const _total = e => init.keys.length + ( features.checkable ? 1 : 0 ) + ( features.rearrangeable ? 1 : 0 )
 
 	$: total = _total()
 	$: offset = total - keys.length
-	$: widths = dimensions.widths || []
 	$: colspan = total
 
 	let style = ''
 
-	$: keys = config.keys || []
+	$: keys = init.keys || []
 
 </script>
 
@@ -59,8 +60,8 @@
 		class={ 'stt-'+slugify(id) }
 		data-key={ slugify(id) }
 		{style}>
-		<Td {config} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} {colspan}
-			width={ '100%' }
+		<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} {colspan}
+			index={ -1 }
 			key={'stt-hidden-cell'}>
 			<div style={`height: ${dimensions.row}px`} />
 		</Td>
@@ -73,8 +74,8 @@
 		{style}>
 
 		{#if features.checkable}
-			<Td {config} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} 
-				width={ widths[ 0 ] }
+			<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} 
+				index={ 0 }
 				key={'stt-checkable-cell'}>
 				<label 
 					style={special}>
@@ -88,8 +89,8 @@
 		{/if}
 
 		{#if features.rearrangeable}
-			<Td {config} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type}
-				width={ widths[ offset - 1 ] }
+			<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type}
+				index={ offset - 1 }
 				key={'stt-rearrangeable-cell'}>
 				{#if type != 'key'}
 					<div style={special} bind:this={ misc.els.handles[ id ] }>|||</div>
@@ -98,8 +99,8 @@
 		{/if}
 
 		{#each keys as key, idx}
-			<Td {config} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {key} {type} 
-				width={ widths[ offset + idx ] } />
+			<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {key} {type} 
+				index={ offset + idx } />
 		{/each}
 	</tr>
 

@@ -2,7 +2,7 @@
 
 	import { defaults, slugify } from './defaults.js'
 
-	export let config
+	export let init
 	export let dimensions
 	export let debug
 	export let callbacks
@@ -13,12 +13,13 @@
 	export let id
 	export let item
 	export let key
+	export let index
 
 	export let type
 
-	export let width
-
 	export let colspan = 1
+
+	$: width = index == -1 ? '100%' : ( dimensions.widths || [] )[ index ]
 
 	$: _refresh = misc.refresh ?  ' ' : ''
 
@@ -38,18 +39,18 @@
 		padding:0;
 		position:relative;
 		${ sorting && type =='key' ? 'cursor:pointer' : ''}
-		${width?`width:${width};`:''}`
+		${width?`width:${ isNaN(width) ? width : width + 'px'};`:''}`
 
 	$: hasSlot = $$props.$$slots
 
-	$: obj = { id, item, key, value: item[key] }
+	$: obj = { id, item, key, value: item[key], index, type }
 	$: cbs = callbacks || {}
 	$: renderFunc = (cbs.render || {})[type] || defaults.render
 	$: clickFunc = (cbs.click || {})[type] || defaults.click
 
 	function onClick(obj, e) {
-		clickFunc( obj, e )
-		const exists = config.keys.indexOf( key ) != -1
+		clickFunc( { ...obj, event: e } )
+		const exists = init.keys.indexOf( key ) != -1
 		if ( type == 'key' && exists && sorting) {
 			misc.reorder( { id, item, key, e} )
 		}
@@ -69,10 +70,21 @@
 	class:stt-descending={ same && !direction }
 	data-key={ key }
 	on:click={ e => onClick(obj, e) }>
-	<div 
-		{style}>
-		<!-- use svelte:component -->
-		{@html (renderFunc( obj ) || '') + _refresh }
-		<slot />
-	</div>
+	{#if init.nodiv}
+		{#if Object.getOwnPropertyNames(renderFunc).indexOf('prototype') != -1}
+			<svelte:component this={renderFunc} {...obj} />
+		{:else}
+			{@html (renderFunc( obj ) || '') + _refresh }
+		{/if}
+	{:else}
+		<div {style}>
+			<!-- use svelte:component -->
+			{#if Object.getOwnPropertyNames(renderFunc).indexOf('prototype') != -1}
+				<svelte:component this={renderFunc} {...obj} />
+			{:else}
+				{@html (renderFunc( obj ) || '') + _refresh }
+			{/if}
+			<slot />
+		</div>
+	{/if}
 </td>
