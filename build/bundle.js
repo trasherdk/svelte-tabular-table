@@ -1,5 +1,5 @@
 
-(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 var app = (function () {
     'use strict';
 
@@ -1607,7 +1607,7 @@ var app = (function () {
     	let if_block;
     	let t;
     	let current;
-    	const if_block_creators = [create_if_block_2$3, create_else_block_2$1];
+    	const if_block_creators = [create_if_block_2$3, create_else_block_2];
     	const if_blocks = [];
 
     	function select_block_type_2(ctx, dirty) {
@@ -1790,7 +1790,7 @@ var app = (function () {
     }
 
     // (84:3) {:else}
-    function create_else_block_2$1(ctx) {
+    function create_else_block_2(ctx) {
     	let html_tag;
     	let raw_value = (/*renderFunc*/ ctx[7](/*obj*/ ctx[6]) || "") + /*_refresh*/ ctx[3] + "";
     	let html_anchor;
@@ -1817,7 +1817,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block_2$1.name,
+    		id: create_else_block_2.name,
     		type: "else",
     		source: "(84:3) {:else}",
     		ctx
@@ -6633,13 +6633,13 @@ var app = (function () {
     			attr_dev(a, "class", "opt");
     			attr_dev(a, "href", "#api");
     			toggle_class(a, "fill", /*nav*/ ctx[2] == "api");
-    			add_location(a, file, 234, 3, 4807);
+    			add_location(a, file, 234, 3, 4785);
     			attr_dev(div0, "class", "row");
     			set_style(div0, "margin", "1em 0em");
-    			add_location(div0, file, 230, 2, 4601);
-    			add_location(h1, file, 283, 3, 6125);
+    			add_location(div0, file, 230, 2, 4579);
+    			add_location(h1, file, 280, 3, 6059);
     			toggle_class(div1, "hidden", /*nav*/ ctx[2] != "api");
-    			add_location(div1, file, 282, 2, 6086);
+    			add_location(div1, file, 279, 2, 6020);
     		},
     		m: function mount(target, anchor) {
     			html_tag.m(raw0_value, target, anchor);
@@ -6829,7 +6829,7 @@ var app = (function () {
     			ul = element("ul");
     			li0 = element("li");
     			a0 = element("a");
-    			a0.textContent = "Live Examples 🔗";
+    			a0.textContent = "Live Examples ↪";
     			t2 = space();
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
@@ -6854,15 +6854,15 @@ var app = (function () {
     			html_tag = new HtmlTag(t0);
     			attr_dev(a0, "target", "_blank");
     			attr_dev(a0, "href", "https://autr.github.io/svelte-tabular-table");
-    			add_location(a0, file, 193, 8, 3645);
-    			add_location(li0, file, 193, 4, 3641);
+    			add_location(a0, file, 193, 8, 3627);
+    			add_location(li0, file, 193, 4, 3623);
     			attr_dev(a1, "href", "#api-documentation");
-    			add_location(a1, file, 197, 8, 3871);
-    			add_location(li1, file, 197, 4, 3867);
-    			add_location(ul, file, 192, 3, 3632);
+    			add_location(a1, file, 197, 8, 3852);
+    			add_location(li1, file, 197, 4, 3848);
+    			add_location(ul, file, 192, 3, 3614);
     			attr_dev(h1, "id", "api");
-    			add_location(h1, file, 212, 3, 4283);
-    			add_location(div, file, 190, 2, 3581);
+    			add_location(h1, file, 212, 3, 4261);
+    			add_location(div, file, 190, 2, 3563);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -6991,7 +6991,7 @@ var app = (function () {
     			attr_dev(a, "class", "opt");
     			attr_dev(a, "href", "#" + slugify(/*table*/ ctx[19].id));
     			toggle_class(a, "fill", /*nav*/ ctx[2] == slugify(/*table*/ ctx[19].id));
-    			add_location(a, file, 232, 4, 4675);
+    			add_location(a, file, 232, 4, 4653);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
@@ -7021,36 +7021,6 @@ var app = (function () {
     	return block;
     }
 
-    // (258:4) {:else}
-    function create_else_block_2(ctx) {
-    	let p;
-
-    	const block = {
-    		c: function create() {
-    			p = element("p");
-    			p.textContent = "No config to view.";
-    			add_location(p, file, 258, 5, 5344);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, p, anchor);
-    		},
-    		p: noop,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(p);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_else_block_2.name,
-    		type: "else",
-    		source: "(258:4) {:else}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
     // (250:4) {#if code && docs[table.id] }
     function create_if_block_3(ctx) {
     	let pre;
@@ -7063,8 +7033,8 @@ var app = (function () {
     			pre = element("pre");
     			code_1 = element("code");
     			t = text(t_value);
-    			add_location(code_1, file, 252, 6, 5261);
-    			add_location(pre, file, 251, 5, 5249);
+    			add_location(code_1, file, 252, 6, 5239);
+    			add_location(pre, file, 251, 5, 5227);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, pre, anchor);
@@ -7088,7 +7058,7 @@ var app = (function () {
     	return block;
     }
 
-    // (273:5) {:else}
+    // (270:5) {:else}
     function create_else_block_1(ctx) {
     	let table;
     	let current;
@@ -7134,14 +7104,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(273:5) {:else}",
+    		source: "(270:5) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (265:54) 
+    // (262:54) 
     function create_if_block_2(ctx) {
     	let div;
     	let p;
@@ -7184,9 +7154,9 @@ var app = (function () {
     			create_component(table.$$.fragment);
     			set_style(p, "padding", "4em 1em");
     			set_style(p, "text-align", "center");
-    			add_location(p, file, 269, 7, 5766);
+    			add_location(p, file, 266, 7, 5700);
     			attr_dev(div, "style", /*scroller*/ ctx[6]);
-    			add_location(div, file, 265, 6, 5599);
+    			add_location(div, file, 262, 6, 5533);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -7245,14 +7215,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(265:54) ",
+    		source: "(262:54) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (263:5) {#if table.id.indexOf('Autohide (1)') != -1}
+    // (260:5) {#if table.id.indexOf('Autohide (1)') != -1}
     function create_if_block_1(ctx) {
     	let table;
     	let current;
@@ -7314,7 +7284,7 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(263:5) {#if table.id.indexOf('Autohide (1)') != -1}",
+    		source: "(260:5) {#if table.id.indexOf('Autohide (1)') != -1}",
     		ctx
     	});
 
@@ -7344,24 +7314,17 @@ var app = (function () {
     	let current;
     	let mounted;
     	let dispose;
-
-    	function select_block_type_1(ctx, dirty) {
-    		if (/*code*/ ctx[1] && docs[/*table*/ ctx[19].id]) return create_if_block_3;
-    		return create_else_block_2;
-    	}
-
-    	let current_block_type = select_block_type_1(ctx);
-    	let if_block0 = current_block_type(ctx);
+    	let if_block0 = /*code*/ ctx[1] && docs[/*table*/ ctx[19].id] && create_if_block_3(ctx);
     	const if_block_creators = [create_if_block_1, create_if_block_2, create_else_block_1];
     	const if_blocks = [];
 
-    	function select_block_type_2(ctx, dirty) {
+    	function select_block_type_1(ctx, dirty) {
     		if (/*table*/ ctx[19].id.indexOf("Autohide (1)") != -1) return 0;
     		if (/*table*/ ctx[19].id.indexOf("Autohide (2)") != -1) return 1;
     		return 2;
     	}
 
-    	current_block_type_index = select_block_type_2(ctx);
+    	current_block_type_index = select_block_type_1(ctx);
     	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 
     	const block = {
@@ -7378,20 +7341,20 @@ var app = (function () {
     			t6 = space();
     			p = element("p");
     			t7 = space();
-    			if_block0.c();
+    			if (if_block0) if_block0.c();
     			t8 = space();
     			div0 = element("div");
     			if_block1.c();
     			attr_dev(code_1, "class", "cc");
     			toggle_class(code_1, "filled", /*code*/ ctx[1]);
-    			add_location(code_1, file, 242, 5, 5049);
-    			add_location(h1, file, 240, 4, 5003);
-    			add_location(p, file, 247, 4, 5164);
+    			add_location(code_1, file, 242, 5, 5027);
+    			add_location(h1, file, 240, 4, 4981);
+    			add_location(p, file, 247, 4, 5142);
     			toggle_class(div0, "hidden", /*code*/ ctx[1]);
-    			add_location(div0, file, 261, 4, 5385);
+    			add_location(div0, file, 258, 4, 5319);
     			set_style(div1, "margin", "3em 0em");
     			toggle_class(div1, "hidden", /*nav*/ ctx[2] != slugify(/*table*/ ctx[19].id));
-    			add_location(div1, file, 239, 3, 4927);
+    			add_location(div1, file, 239, 3, 4905);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -7406,7 +7369,7 @@ var app = (function () {
     			append_dev(div1, p);
     			p.innerHTML = raw_value;
     			append_dev(div1, t7);
-    			if_block0.m(div1, null);
+    			if (if_block0) if_block0.m(div1, null);
     			append_dev(div1, t8);
     			append_dev(div1, div0);
     			if_blocks[current_block_type_index].m(div0, null);
@@ -7422,16 +7385,17 @@ var app = (function () {
     				toggle_class(code_1, "filled", /*code*/ ctx[1]);
     			}
 
-    			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block0) {
-    				if_block0.p(ctx, dirty);
-    			} else {
-    				if_block0.d(1);
-    				if_block0 = current_block_type(ctx);
-
+    			if (/*code*/ ctx[1] && docs[/*table*/ ctx[19].id]) {
     				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_3(ctx);
     					if_block0.c();
     					if_block0.m(div1, t8);
     				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
     			}
 
     			if_block1.p(ctx, dirty);
@@ -7455,7 +7419,7 @@ var app = (function () {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div1);
-    			if_block0.d();
+    			if (if_block0) if_block0.d();
     			if_blocks[current_block_type_index].d();
     			mounted = false;
     			dispose();
@@ -7486,8 +7450,8 @@ var app = (function () {
     			a = element("a");
     			t = text(t_value);
     			attr_dev(a, "href", "#" + /*getID*/ ctx[8](/*table*/ ctx[19], /*idx*/ ctx[21]));
-    			add_location(a, file, 195, 9, 3780);
-    			add_location(li, file, 195, 5, 3776);
+    			add_location(a, file, 195, 9, 3761);
+    			add_location(li, file, 195, 5, 3757);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -7513,60 +7477,57 @@ var app = (function () {
 
     // (200:3) {#each all as table, idx}
     function create_each_block(ctx) {
-    	let h1;
+    	let h3;
     	let a;
     	let t0_value = /*getID*/ ctx[8](/*table*/ ctx[19], /*idx*/ ctx[21], true) + "";
     	let t0;
     	let t1;
-    	let t2;
     	let p;
     	let raw_value = (docs[/*table*/ ctx[19].id]?.meta || "") + "";
-    	let t3;
+    	let t2;
     	let pre;
     	let code_1;
-    	let t4_value = docs[/*table*/ ctx[19].id]?.code + "";
-    	let t4;
+    	let t3_value = docs[/*table*/ ctx[19].id]?.code + "";
+    	let t3;
 
     	const block = {
     		c: function create() {
-    			h1 = element("h1");
+    			h3 = element("h3");
     			a = element("a");
     			t0 = text(t0_value);
-    			t1 = text(" 🔗");
-    			t2 = space();
+    			t1 = space();
     			p = element("p");
-    			t3 = space();
+    			t2 = space();
     			pre = element("pre");
     			code_1 = element("code");
-    			t4 = text(t4_value);
+    			t3 = text(t3_value);
     			attr_dev(a, "target", "_blank");
     			attr_dev(a, "href", `https://autr.github.io/svelte-tabular-table#${slugify(/*table*/ ctx[19].id)}`);
-    			add_location(a, file, 202, 5, 4005);
-    			attr_dev(h1, "id", /*getID*/ ctx[8](/*table*/ ctx[19], /*idx*/ ctx[21]));
-    			add_location(h1, file, 201, 4, 3970);
-    			add_location(p, file, 204, 4, 4147);
-    			add_location(code_1, file, 206, 5, 4206);
-    			add_location(pre, file, 205, 4, 4195);
+    			add_location(a, file, 202, 5, 3986);
+    			attr_dev(h3, "id", /*getID*/ ctx[8](/*table*/ ctx[19], /*idx*/ ctx[21]));
+    			add_location(h3, file, 201, 4, 3951);
+    			add_location(p, file, 204, 4, 4125);
+    			add_location(code_1, file, 206, 5, 4184);
+    			add_location(pre, file, 205, 4, 4173);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, h1, anchor);
-    			append_dev(h1, a);
+    			insert_dev(target, h3, anchor);
+    			append_dev(h3, a);
     			append_dev(a, t0);
-    			append_dev(a, t1);
-    			insert_dev(target, t2, anchor);
+    			insert_dev(target, t1, anchor);
     			insert_dev(target, p, anchor);
     			p.innerHTML = raw_value;
-    			insert_dev(target, t3, anchor);
+    			insert_dev(target, t2, anchor);
     			insert_dev(target, pre, anchor);
     			append_dev(pre, code_1);
-    			append_dev(code_1, t4);
+    			append_dev(code_1, t3);
     		},
     		p: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(h1);
-    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(h3);
+    			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(p);
-    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(pre);
     		}
     	};
@@ -7636,20 +7597,20 @@ var app = (function () {
     			a2.textContent = "GB";
     			attr_dev(a0, "target", "_blank");
     			attr_dev(a0, "href", "https://autr.tv");
-    			add_location(a0, file, 305, 16, 6657);
-    			add_location(p0, file, 305, 2, 6643);
+    			add_location(a0, file, 302, 16, 6591);
+    			add_location(p0, file, 302, 2, 6577);
     			set_style(a1, "cursor", "pointer");
-    			add_location(a1, file, 307, 3, 6760);
+    			add_location(a1, file, 304, 3, 6694);
     			set_style(a2, "cursor", "pointer");
-    			add_location(a2, file, 308, 3, 6835);
-    			add_location(p1, file, 306, 2, 6753);
+    			add_location(a2, file, 305, 3, 6769);
+    			add_location(p1, file, 303, 2, 6687);
     			set_style(div, "display", "flex");
     			set_style(div, "justify-content", "space-between");
-    			add_location(div, file, 304, 1, 6582);
+    			add_location(div, file, 301, 1, 6516);
     			set_style(main, "max-width", "1200px");
     			set_style(main, "margin", "0 auto");
     			set_style(main, "padding-bottom", "2em");
-    			add_location(main, file, 186, 0, 3492);
+    			add_location(main, file, 186, 0, 3474);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -7888,7 +7849,7 @@ var app = (function () {
     	}
 
     	function getID(table, idx, no) {
-    		let s = `Example ${idx + 1} - ${table.id}${no ? "" : " 🔗"}`;
+    		let s = `Example ${idx + 1} - ${table.id}`;
     		if (no) return s;
     		return slugify(s);
     	}
