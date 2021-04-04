@@ -176,7 +176,7 @@
 	}
 
 	function getID( table, idx, no ) {
-		let s = `Example ${idx + 1} - ${table.id}${no ? '' : ' 🔗'}`
+		let s = `Example ${idx + 1} - ${table.id}`
 		if (no) return s
 		return slugify( s )
 	}
@@ -191,7 +191,7 @@
 		<div bind:this={mdEl}>
 			{@html docs['Intro']}
 			<ul>
-				<li><a target="_blank" href="https://autr.github.io/svelte-tabular-table">Live Examples 🔗</a></li>
+				<li><a target="_blank" href="https://autr.github.io/svelte-tabular-table">Live Examples ↪</a></li>
 				{#each all as table, idx}
 					<li><a href={'#'+getID( table, idx )}>{getID( table, idx, true )}</a></li>
 				{/each}
@@ -199,9 +199,9 @@
 			</ul>
 			{#each all as table, idx}
 
-				<h1 id={getID( table, idx )}>
-					<a target="_blank" href={`https://autr.github.io/svelte-tabular-table#${slugify(table.id)}`}>{getID( table, idx, true )} 🔗</a>
-				</h1>
+				<h3 id={getID( table, idx )}>
+					<a target="_blank" href={`https://autr.github.io/svelte-tabular-table#${slugify(table.id)}`}>{getID( table, idx, true )}</a>
+				</h3>
 				<p>{@html docs[ table.id ]?.meta || ''}</p>
 				<pre>
 					<code>
@@ -254,9 +254,6 @@
 							{ docs[table.id]?.code }
 						</code>
 					</pre>
-
-				{:else}
-					<p>No config to view.</p>
 				{/if}
 
 				<div class:hidden={code}>

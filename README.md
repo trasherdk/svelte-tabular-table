@@ -5,20 +5,19 @@ Fully-featured, no-BS, lightweight table component for Svelte.
 
     pnpm i svelte-tabular-table
 
-*   [Live Examples 🔗](https://autr.github.io/svelte-tabular-table)
-*   [Example 1 - Basic](#example-1---basic-)
-*   [Example 2 - Dimensions](#example-2---dimensions-)
-*   [Example 3 - Sortable](#example-3---sortable-)
-*   [Example 4 - Checkable](#example-4---checkable-)
-*   [Example 5 - Rearrangeable](#example-5---rearrangeable-)
-*   [Example 6 - Autohide (1)](#example-6---autohide-1-)
-*   [Example 7 - Autohide (2)](#example-7---autohide-2-)
-*   [Example 8 - Callbacks](#example-8---callbacks-)
-*   [Example 9 - Components](#example-9---components-)
+*   [Live Examples ↪](https://autr.github.io/svelte-tabular-table)
+*   [Example 1 - Basic](#example-1---basic)
+*   [Example 2 - Dimensions](#example-2---dimensions)
+*   [Example 3 - Sortable](#example-3---sortable)
+*   [Example 4 - Checkable](#example-4---checkable)
+*   [Example 5 - Rearrangeable](#example-5---rearrangeable)
+*   [Example 6 - Autohide (1)](#example-6---autohide-1)
+*   [Example 7 - Autohide (2)](#example-7---autohide-2)
+*   [Example 8 - Callbacks](#example-8---callbacks)
+*   [Example 9 - Components](#example-9---components)
 *   [API Documentation](#api-documentation)
 
-[Example 1 - Basic 🔗](https://autr.github.io/svelte-tabular-table#basic)
-=========================================================================
+### [Example 1 - Basic](https://autr.github.io/svelte-tabular-table#basic)
 
 Basic configuration:
 
@@ -43,8 +42,7 @@ Basic configuration:
     
     <Table {...config} />
 
-[Example 2 - Dimensions 🔗](https://autr.github.io/svelte-tabular-table#dimensions)
-===================================================================================
+### [Example 2 - Dimensions](https://autr.github.io/svelte-tabular-table#dimensions)
 
 Dimensions control the formatting of the table:
 
@@ -71,8 +69,7 @@ When using `features.autohide` it is important to set dimensions, so that each r
     
     <Table {...config} />
 
-[Example 3 - Sortable 🔗](https://autr.github.io/svelte-tabular-table#sortable)
-===============================================================================
+### [Example 3 - Sortable](https://autr.github.io/svelte-tabular-table#sortable)
 
 Sortable headers can be initialised by setting `features.sortable.key` to an initial value and `features.sortable.direction` to `true (ascending)` or `false (descending)`.
 
@@ -93,8 +90,7 @@ Sortable headers can be initialised by setting `features.sortable.key` to an ini
     
     <Table {...config} />
 
-[Example 4 - Checkable 🔗](https://autr.github.io/svelte-tabular-table#checkable)
-=================================================================================
+### [Example 4 - Checkable](https://autr.github.io/svelte-tabular-table#checkable)
 
 Checkable rows are initialised by passing a blank `{}` object to `features.checkable`, which will be set via `init.index`.
 
@@ -116,8 +112,7 @@ Checkable rows are initialised by passing a blank `{}` object to `features.check
     
     <Table {...config} />
 
-[Example 5 - Rearrangeable 🔗](https://autr.github.io/svelte-tabular-table#rearrangeable)
-=========================================================================================
+### [Example 5 - Rearrangeable](https://autr.github.io/svelte-tabular-table#rearrangeable)
 
 Rearrangeable rows are initialised by passing a callback function to `features.rearrangeable`, which will return the _from_ and _to_ indexes as an integer: `( from, to ) => ...`
 
@@ -136,8 +131,7 @@ Rearrangeable rows are initialised by passing a callback function to `features.r
     
     <Table {...config} />
 
-[Example 6 - Autohide (1) 🔗](https://autr.github.io/svelte-tabular-table#autohide-1)
-=====================================================================================
+### [Example 6 - Autohide (1)](https://autr.github.io/svelte-tabular-table#autohide-1)
 
 Autohide will stop rows that are currently not in view from rendering - increasing performance on tables with large datasets or images and video. It can be used inside a container, or with the window element - and must be manually triggered via `features.autohide.position`:
 
@@ -170,8 +164,7 @@ Example using _window_ as container, with `buffer` set to `-0.1` (to illustrate 
     
     <Table {...config} />
 
-[Example 7 - Autohide (2) 🔗](https://autr.github.io/svelte-tabular-table#autohide-2)
-=====================================================================================
+### [Example 7 - Autohide (2)](https://autr.github.io/svelte-tabular-table#autohide-2)
 
 Example using a _container_, see [Autohide (1)](#autohide-1):
 
@@ -198,8 +191,7 @@ Example using a _container_, see [Autohide (1)](#autohide-1):
     
     <Table {...config} />
 
-[Example 8 - Callbacks 🔗](https://autr.github.io/svelte-tabular-table#callbacks)
-=================================================================================
+### [Example 8 - Callbacks](https://autr.github.io/svelte-tabular-table#callbacks)
 
 Callbacks can be defined for:
 
@@ -230,8 +222,7 @@ Callbacks can be defined for:
     
     <Table {...config} />
 
-[Example 9 - Components 🔗](https://autr.github.io/svelte-tabular-table#components)
-===================================================================================
+### [Example 9 - Components](https://autr.github.io/svelte-tabular-table#components)
 
 In place of a function, a `svelte:component` can be used with `callbacks.render`:
 
