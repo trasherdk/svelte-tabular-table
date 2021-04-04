@@ -122,7 +122,7 @@
 		{
 			id: 'Components',
 			init: {
-				keys: ['picture', 'name', 'latitude', 'longitude', 'registered', 'about'],
+				keys: ['name', 'latitude', 'longitude', 'registered', 'about'],
 				index: '_id',
 				data
 			},
