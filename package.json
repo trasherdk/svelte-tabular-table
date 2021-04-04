@@ -34,5 +34,12 @@
   "dependencies": {
     "query-string": "^7.0.0",
     "svelte-native-drag-drop": "file:../svelte-native-drag-drop"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/autr/svelte-tabular-table.git"
   }
 }
