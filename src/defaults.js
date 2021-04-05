@@ -22,9 +22,7 @@ export const defaults = {
 	dimensions: {
 		row: null,
 		padding: 10,
-		widths: [],
-		columns: [],
-		sticky: false
+		widths: []
 	}
 }
 export const slugify = text => text.toString().toLowerCase()

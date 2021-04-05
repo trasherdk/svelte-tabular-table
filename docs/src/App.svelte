@@ -191,7 +191,7 @@
 		<div bind:this={mdEl}>
 			{@html docs['Intro']}
 			<ul>
-				<li><a target="_blank" href="https://autr.github.io/svelte-tabular-table">Live Examples ↪</a></li>
+				<li><a target="_blank" href="https://autr.github.io/svelte-tabular-table">Live Examples</a></li>
 				{#each all as table, idx}
 					<li><a href={'#'+getID( table, idx )}>{getID( table, idx, true )}</a></li>
 				{/each}
@@ -213,9 +213,10 @@
 			<h1 id="api">
 				API Documentation
 			</h1>
+			{@html docs['APIDocs']}
 			<Table init={{
 				data: docs['API'],
-				keys: ['name', 'types', 'example', 'description'],
+					keys: ['Name', 'Description', 'Types', 'Default', 'Example'],
 				index: 'name',
 				nodiv: true
 			}} callbacks={{
@@ -281,22 +282,25 @@
 			<h1>
 				API Documentation
 			</h1>
-			<Table init={{
-				data: docs['API'],
-				keys: ['name', 'types', 'example', 'description'],
-				index: 'name'
-			}} dimensions={{
-				widths: [ 250, 220 ]
-			}} callbacks={{
-				render: {
-					cell: o => {
-						if (o.key == 'types' || o.key == 'description') return `
-							<span>${o.value}</span>
-						`
-						return `<span style="font-family:monospace;">${o.value}</span>`
+			{@html docs['APIDocs']}
+			<div style="overflow: auto; width: 100%;border:1px solid #333">
+				<Table style="font-size:12px;min-width:1200px;border:none" init={{
+					data: docs['API'],
+					keys: ['Name', 'Description', 'Types', 'Default', 'Example'],
+					index: 'name'
+				}} dimensions={{
+					widths: [ 220, null, 210, 120, 260 ]
+				}} callbacks={{
+					render: {
+						cell: o => {
+							if (o.key == 'types' || o.key == 'description') return `
+								<span>${o.value}</span>
+							`
+							return `<span style="font-family:monospace;">${o.value}</span>`
+						}
 					}
-				}
-			}} />
+				}} />
+			</div>
 		</div>
 	{/if}
 	<div style="display:flex;justify-content: space-between;">

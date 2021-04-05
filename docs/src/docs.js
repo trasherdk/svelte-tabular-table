@@ -1,19 +1,21 @@
 
 
 
-function add( name, types, example, description ) {
-	return { name, types, example, description }
+function add( Name, Types, Example, Description, Default ) {
+	return { Name, Types, Example, Description, Default }
 }
 
 function generate( code, add ){
-	let s = ''
+	let s = `<script>\n`
+	if (add) s += `import Auto from './Auto.svelte'\n`
+	s += `import { Table } from 'svelte-tabular-table'\n`
 	s += 'const config = {\n' 
-	s += code.substring(1).replaceAll('\t\t\t\t', '\t') 
-	s += '\n}\n\n// ---\n\n'
+	s += code.substring(1).replaceAll('\t\t\t', '\t') 
+	s += '\n}\n</script>\n'
 	s += '<Table {...config} />'
 	if (add) {
-		s += '\n\n// ---\n\n'
-		s += `<script>\r\n\texport let id\r\n\texport let item\r\n\texport let key\r\n\texport let value\r\n\texport let index\r\n\texport let event\r\n\texport let type\r\n<\/script>\r\n\r\n{#if type == \'key\'}\r\n\t<b style=\"letter-spacing: 0.2em\">{value}<\/b>\r\n{:else if (key == \'picture\')}\r\n\t<img src={ value } \/>\r\n{:else if (key == \'registered\')}\r\n\t<em>{ ( new Date( value ) ).toDateString() }<\/em>\r\n{:else if (key == \'about\')}\r\n\t<marquee>{value}<\/marquee>\r\n{:else if (key == \'name\')}\r\n\t<blink style=\"color:rgb(255,62,0)\">{value}<\/blink>\r\n{:else if (key == \'latitude\' || key ==\'longitude\' )}\r\n\t<code>{value}<\/code>\r\n{:else}\r\n\t{value}\r\n{\/if}`
+		s += '\n\n// --- Auto.svelte ---\n\n'
+		s += `<script>\r\n\texport let id\r\n\texport let item\r\n\texport let key\r\n\texport let value\r\n\texport let index\r\n\texport let type\r\n<\/script>\r\n\r\n{#if type == \'key\'}\r\n\t<b style=\"letter-spacing: 0.2em\">{value}<\/b>\r\n{:else if (key == \'picture\')}\r\n\t<img src={ value } \/>\r\n{:else if (key == \'registered\')}\r\n\t<em>{ ( new Date( value ) ).toDateString() }<\/em>\r\n{:else if (key == \'about\')}\r\n\t<marquee>{value}<\/marquee>\r\n{:else if (key == \'name\')}\r\n\t<blink style=\"color:rgb(255,62,0)\">{value}<\/blink>\r\n{:else if (key == \'latitude\' || key ==\'longitude\' )}\r\n\t<code>{value}<\/code>\r\n{:else}\r\n\t{value}\r\n{\/if}`
 	}
 	return s
 }
@@ -26,25 +28,36 @@ export default {
 			'init.data',
 			['Array:Object'],
 			`[ { color: 'blue', id: '001' }, {color: 'red', id: '002' } ]`,
-			'list of rows'
+			'list of rows',
+			`null`
 		),
 		add( 
 			'init.keys',
 			['Array:String'],
 			`[ 'color', 'id' ]`,
-			'list of columns'
+			'list of columns',
+			`null`
 		),
 		add( 
 			'init.index',
 			['String'],
 			`id`,
-			'unique index'
+			'unique index',
+			`null`
 		),
 		add( 
 			'init.nohide',
 			['Boolean'],
 			`true`,
-			'dont render thead'
+			'dont render thead',
+			`false`
+		),
+		add( 
+			'init.nodiv',
+			['Boolean'],
+			`true`,
+			'dont render div',
+			`false`
 		),
 
 		// ---------------------
@@ -53,19 +66,22 @@ export default {
 			'dimensions.row',
 			['Integer', 'String'],
 			`10, "2em"`,
-			'height of each row'
+			'height of each row',
+			`null`
 		),
 		add( 
 			'dimensions.padding',
 			['Integer', 'String'],
 			`10, "1em"`,
-			'padding of each row'
+			'padding of each row',
+			`10`
 		),
 		add( 
 			'dimensions.widths',
 			['Array:Integer', 'Array:String'],
 			`[ 100, "20%", "40px", 10]`,
-			'width of each column'
+			'width of each column',
+			`[]`
 		),
 
 		// ---------------------
@@ -74,13 +90,15 @@ export default {
 			'features.sortable.key',
 			['String'],
 			`"color"`,
-			'initial sorting key (enables sortable)'
+			'initial sorting key (enables sortable)',
+			`null`
 		),
 		add( 
 			'features.sortable.direction',
 			['Boolean'],
 			`true`,
-			'ascending or descending'
+			'ascending or descending',
+			`false`
 		),
 
 		// ---------------------
@@ -89,7 +107,8 @@ export default {
 			'features.checkable',
 			['Object'],
 			`{}`,
-			'blank object (enables checkable)'
+			'blank object (enables checkable)',
+			`null`
 		),
 
 		// ---------------------
@@ -98,7 +117,8 @@ export default {
 			'features.rearrangeable',
 			['Function'],
 			`(a,b) => alert(\`from \${a} to \${b}\`)`,
-			'callback (enables rearrangeable)'
+			'callback (enables rearrangeable)',
+			`null`
 		),
 		// ---------------------
 		
@@ -106,19 +126,22 @@ export default {
 			'features.autohide.container',
 			['Element'],
 			`bind:this={domElement},window`,
-			'DOM element (enables autohide)'
+			'DOM element (enables autohide)',
+			`null`
 		),
 		add( 
 			'features.autohide.position',
 			['Integer'],
 			`on:scroll=>{setPosition}`,
-			'current scroll position (set externally)'
+			'current scroll position (set externally)',
+			`0`
 		),
 		add( 
 			'features.autohide.buffer',
 			['Float'],
 			`2`,
-			'extend area (multiple of container height)'
+			'extend area (multiple of container height)',
+			`0`
 		),
 
 		// ---------------------
@@ -126,14 +149,16 @@ export default {
 		add( 
 			'callbacks.render.key|cell',
 			['Function', 'SvelteComponent'],
-			`o => o.value + '!'`,
-			'rendering callback or SvelteComponent'
+			`o => 'hello world'`,
+			'rendering callback or SvelteComponent',
+			`o => o.value`
 		),
 		add( 
 			'callbacks.click.key|cell',
 			['Function'],
 			`o => alert(\`\${o.id}\ clicked!\`)`,
-			'cell or key click callback'
+			'cell or key click callback',
+			`null`
 		),
 
 		// ---------------------
@@ -141,16 +166,43 @@ export default {
 		add( 
 			'id',
 			['String'],
-			`my-table`,
-			'#id property for Table'
+			`table-1`,
+			'id attribute of table',
+			``
+		),
+		add( 
+			'class',
+			['String'],
+			`table`,
+			'class attribute of table',
+			``
+		),
+		add( 
+			'id',
+			['String'],
+			`background:red`,
+			'style attribute of table',
+			``
 		),
 		add( 
 			'debug',
 			['Boolean'],
 			`true`,
-			'debugging console log'
+			'debugging console log',
+			`false`
 		)
 	],
+
+	'APIDocs': `
+		<p>Properties are categorised:</p>
+		<ul>
+			<li><code>init</code> - for data and setup</li>
+			<li><code>dimensions</code> - formatting sizes, widths, heights</li>
+			<li><code>features</code> - sortable, checkable, rearrangeable, autohide</li>
+			<li><code>callbacks</code> - cell rendering and events</li>
+		</ul>
+		<pre><code>import { Table } from 'svelte-tabular-table'\n&lt;Table {init} {dimensions} {features} {callbacks} {id} {class} {style} {debug} /&gt;</code></pre>
+	`,
 
 	'Intro': `
 		<h1 class="bb">Svelte Tabular Table</h1>
@@ -330,7 +382,7 @@ export default {
 	},
 	'Components': {
 		meta: `
-			In place of a function, a <code>svelte:component</code> can be used with <code>callbacks.render</code>:`,
+			In place of a callback render function, a <code>svelte:component</code> can be used with the properties <code>{id, item, key, value, index}</code>:`,
 		code: generate(`
 			init: {
 				keys: ['picture', 'name', 'latitude', 'longitude', 'registered', 'about'],

@@ -46,6 +46,10 @@
 
 	$: rev = review( init, dimensions, callbacks, features, misc )
 
+	let class_ = ''
+	export { class_ as class }
+	let style_ = ''
+	export { style_ as style }
 
 	export let init = {
 		keys: [], // array of text or array of objects
@@ -275,14 +279,16 @@
 	$: sort = features?.sortable?.sort || defaults.sort
 	$: data = (features?.sortable?.key) ? sort( features.sortable, [...init.data], id ) : init.data
 
+	$: allStyles = `width:100%;table-layout:fixed;border-spacing:0;${style_}`
+
 </script>
 
 <table 
 	bind:this={ misc.els.table } 
 	id={ 'stt-'+slugify(id) }
-	class={ 'stt-'+slugify(id) }
+	class={ class_ + ' stt-'+slugify(id) }
 	data-id={ slugify(id) }
-	style="width:100%;table-layout:fixed;border-spacing:0;">
+	style={ allStyles }>
 
 	{#if !init.nohead}
 		<thead>
