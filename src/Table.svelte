@@ -285,7 +285,7 @@
 
 	function getSorted( _sortable, _id ) {
 		const s = sort( _sortable, [...init.data], _id )
-		// setTimeout( triggerScroll, 1 )
+		setTimeout( triggerScroll, 1 )
 		return s
 	}
 

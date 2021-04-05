@@ -1,6 +1,6 @@
 {
   "name": "svelte-tabular-table",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Fully-featured, lightweight table component for Svelte JS",
   "author": "G.Sinnott",
   "license": "MIT",
@@ -14,7 +14,7 @@
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "npm run build",
-    "deploy": "./deploy && npm publish"
+    "deploy": "./deploy.sh && npm publish"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^9.0.0",
