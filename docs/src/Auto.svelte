@@ -4,7 +4,6 @@
 	export let key
 	export let value
 	export let index
-	export let event
 	export let type
 </script>
 

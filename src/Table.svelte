@@ -20,6 +20,7 @@
 	}
 
 	function review( init_, dimensions, callbacks, features, misc ) {
+
 		if ( features.autohide && !dimensions.row ) warn( 'features.autohide is set, but no height is set for dimensions.row (defaulting to 1em)')
 
 		let ids = []
@@ -42,6 +43,9 @@
 		}
 		const activ = tally.duped > 0 || tally.added > 0
 		if (activ ) warn( `${tally.duped}/${len} duplicate keys amended, ${tally.added}/${len} keys added`)
+
+		if ( !features.autohide ) misc.inited = true
+
 	}
 
 	$: rev = review( init, dimensions, callbacks, features, misc )
@@ -61,7 +65,7 @@
 
 	export let dimensions = {...defaults.dimensions}
 	export let debug = true
-	export let id = ''
+	export let id = 'table'
 
 	onMount( async () => {
 	})
@@ -94,6 +98,7 @@
 	let misc = {
 		hidden: {},
 		els: { table: null, thead: null, tr: {}, td: {}, handles: {}, drops: {} },
+		inited: false,
 		refresh: true,
 		reorder: o => {
 			const key = features?.sortable?.key
@@ -170,16 +175,16 @@
 		if (autohide && !dimensions?.padding) dimensions.padding = defaults.dimensions.padding
 
 
+		let tally = { above: 0, below: 0, first: null, last: null }
+		const len = (data || []).length
 		const el = autohide?.container
-		const exists = el != undefined
+		const exists = el != undefined && len > 0
 		const scroll = autohide?.position || 0
 		const height = dims.row + (dims.padding * 2)
 		const outside = ( el?.offsetHeight || window.innerHeight ) + height
 		const extra = outside * ( autohide?.buffer || 0 )
 
 
-		let tally = { above: 0, below: 0, first: null, last: null }
-		const len = (data || []).length
 
 		const to = misc?.els?.table?.offsetTop || 0
 		const eo = el?.offsetTop || 0
@@ -242,8 +247,12 @@
 				top: ${ to - scroll + (misc?.els?.table?.offsetHeight || 0) }px;`
 		}
 
-		if (activ) log(`${outside}px container: ${tally.above}/${len} above, ${tally.below}/${len} below, from ${tally.first} to ${tally.last}, ${len - (tally.above+tally.below)}/${len} visible`)
+		if (exists) log(`${outside}px container: ${tally.above}/${len} above, ${tally.below}/${len} below, from ${tally.first} to ${tally.last}, ${len - (tally.above+tally.below)}/${len} visible, using height ${height}px`)
+
+		if (exists) misc.inited = true
 	}
+
+	const triggerScroll = e => onScroll( init, features?.autohide, dimensions )
 
 	$: onScroll( init, features?.autohide, dimensions )
 	$: bindDragDrop( init.data )
@@ -274,15 +283,20 @@
 
 	}
 
+	function getSorted( _sortable, _id ) {
+		const s = sort( _sortable, [...init.data], _id )
+		// setTimeout( triggerScroll, 1 )
+		return s
+	}
+
 	$: isIndeterminate( features.checkable )
 
 	$: sort = features?.sortable?.sort || defaults.sort
-	$: data = (features?.sortable?.key) ? sort( features.sortable, [...init.data], id ) : init.data
+	$: data = (features?.sortable?.key) ? getSorted( features.sortable, id ) : init.data
 
 	$: allStyles = `width:100%;table-layout:fixed;border-spacing:0;${style_}`
 
 </script>
-
 <table 
 	bind:this={ misc.els.table } 
 	id={ 'stt-'+slugify(id) }
@@ -298,7 +312,7 @@
 
 	{/if}
 
-	<tbody>
+	<tbody >
 
 		{#each data as item, idx }
 			<Tr {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} {item} type={'cell'} />

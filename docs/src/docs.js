@@ -46,7 +46,7 @@ export default {
 			`null`
 		),
 		add( 
-			'init.nohide',
+			'init.nohead',
 			['Boolean'],
 			`true`,
 			'dont render thead',
@@ -168,7 +168,7 @@ export default {
 			['String'],
 			`table-1`,
 			'id attribute of table',
-			``
+			`table`
 		),
 		add( 
 			'class',

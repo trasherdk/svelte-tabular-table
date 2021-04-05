@@ -290,7 +290,7 @@ Properties are categorised:
 | init.data | list of rows | Array:Object | null | \[ { color: 'blue', id: '001' }, {color: 'red', id: '002' } \] |
 | init.keys | list of columns | Array:String | null | \[ 'color', 'id' \] |
 | init.index | unique index | String | null | id |
-| init.nohide | dont render thead | Boolean | false | true |
+| init.nohead | dont render thead | Boolean | false | true |
 | init.nodiv | dont render div | Boolean | false | true |
 | dimensions.row | height of each row | Integer,String | null | 10, "2em" |
 | dimensions.padding | padding of each row | Integer,String | 10 | 10, "1em" |
@@ -304,7 +304,7 @@ Properties are categorised:
 | features.autohide.buffer | extend area (multiple of container height) | Float | 0 | 2 |
 | callbacks.render.key|cell | rendering callback or SvelteComponent | Function,SvelteComponent | o => o.value | o => 'hello world' |
 | callbacks.click.key|cell | cell or key click callback | Function | null | o => alert(\`${o.id} clicked!\`) |
-| id | id attribute of table | String |  | table-1 |
+| id | id attribute of table | String | table | table-1 |
 | class | class attribute of table | String |  | table |
 | id | style attribute of table | String |  | background:red |
 | debug | debugging console log | Boolean | false | true |

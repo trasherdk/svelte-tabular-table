@@ -14,17 +14,19 @@
 	export let item
 	export let key
 	export let index
-
 	export let type
-
 	export let colspan = 1
+
+
+	let class_ = ''
+	export { class_ as class }
 
 	$: width = index == -1 ? '100%' : ( dimensions.widths || [] )[ index ]
 
 	$: _refresh = misc.refresh ?  ' ' : ''
 
 	$: _style = e => {
-		let s = 'overflow-wrap:break-word;'
+		let s = 'overflow-wrap:break-word;box-sizing:content-box;'
 		const whitespace = 'white-space: nowrap;overflow:hidden;text-overflow: ellipsis;'
 		const em = (dimensions.row || defaults.dimensions.row) + 'px;'
 		s += 'padding:' + (dimensions.padding || defaults.dimensions.padding) + 'px;'
@@ -58,33 +60,37 @@
 	$: sorting = features?.sortable?.key
 	$: direction = features?.sortable?.direction
 	$: same = sorting == key
+
+	$: render = component ? null : (renderFunc( obj ) || '') + _refresh
+	$: component = Object.getOwnPropertyNames(renderFunc).indexOf('prototype') != -1
 </script>
 
 
 
 <td style={tdStyle}
 	{colspan}
-	class={ 'stt-'+slugify( key ) }
+	{width}
+	class={ class_ + ' stt-'+slugify( key ) }
 	class:stt-sorted={ same }
 	class:stt-ascending={ same && direction }
 	class:stt-descending={ same && !direction }
 	data-key={ key }
 	on:click={ e => onClick(obj, e) }>
 	{#if init.nodiv}
-		{#if Object.getOwnPropertyNames(renderFunc).indexOf('prototype') != -1}
-			<svelte:component this={renderFunc} {...obj} />
+		{#if !$$slots.default }
+			{#if component } <svelte:component this={renderFunc} {...obj} />
+			{:else} {@html render} {/if}
 		{:else}
-			{@html (renderFunc( obj ) || '') + _refresh }
+			<slot />
 		{/if}
 	{:else}
 		<div {style}>
-			<!-- use svelte:component -->
-			{#if Object.getOwnPropertyNames(renderFunc).indexOf('prototype') != -1}
-				<svelte:component this={renderFunc} {...obj} />
+			{#if !$$slots.default }
+				{#if component } <svelte:component this={renderFunc} {...obj} />
+				{:else} {@html render} {/if}
 			{:else}
-				{@html (renderFunc( obj ) || '') + _refresh }
+				<slot />
 			{/if}
-			<slot />
 		</div>
 	{/if}
 </td>

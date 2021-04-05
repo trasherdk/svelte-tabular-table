@@ -50,10 +50,12 @@
 
 	$: keys = init.keys || []
 
+	$: checked = ( features?.checkable || {} )[ id ]
+
 </script>
 
 
-{#if misc.hidden[ id ]}
+{#if misc.hidden[ id ] || !misc.inited }
 
 	<tr bind:this={ misc.els.tr[ id ] }
 		class:stt-hidden={ true }
@@ -70,6 +72,8 @@
 {:else}
 	<tr bind:this={ misc.els.tr[ id ] }
 		class={ 'stt-'+slugify(id) }
+		class:stt-checked={checked }
+		class:stt-rearrangeable={ features.rearrangeable }
 		data-key={ slugify(id) }
 		{style}>
 
@@ -81,7 +85,7 @@
 					style={special}>
 					<input type="checkbox" 
 						{indeterminate}
-						bind:checked={ features.checkable[ id ] }
+						bind:checked={checked }
 						on:change={ onChecked }  />
 					<span />
 				</label>
