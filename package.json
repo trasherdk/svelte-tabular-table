@@ -1,6 +1,6 @@
 {
   "name": "svelte-tabular-table",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fully-featured, lightweight table component for Svelte JS",
   "author": "G.Sinnott",
   "license": "MIT",
