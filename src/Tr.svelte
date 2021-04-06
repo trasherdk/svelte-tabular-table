@@ -21,8 +21,7 @@
 				const id = init.data[i][init.index]
 				features.checkable[id] = event.target.checked
 			}
-		} else {
-
+		} else {	
 			(callbacks?.checked || defaults.checked)( { item, id, event } )
 			features.checkable[ id ] = event.target.checked
 		}
@@ -85,7 +84,7 @@
 					style={special}>
 					<input type="checkbox" 
 						{indeterminate}
-						bind:checked={checked }
+						bind:checked={ features.checkable[id] }
 						on:change={ onChecked }  />
 					<span />
 				</label>
