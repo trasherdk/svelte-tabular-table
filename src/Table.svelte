@@ -294,7 +294,7 @@
 	$: sort = features?.sortable?.sort || defaults.sort
 	$: data = (features?.sortable?.key) ? getSorted( features.sortable, id ) : init.data
 
-	$: allStyles = `width:100%;table-layout:fixed;border-spacing:0;${style_}`
+	$: allStyles = `min-width:${dimensions.minwidth || '0'}px;width:100%;table-layout:fixed;border-spacing:0;${style_}`
 
 </script>
 <table 
