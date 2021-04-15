@@ -2,6 +2,7 @@
 
 
 	import Tr from './Tr.svelte'
+	import Td from './Td.svelte'
 	import { onMount, onDestroy } from 'svelte'
 	import queryString from 'query-string'
 	import dragdrop from 'svelte-native-drag-drop'
@@ -64,7 +65,7 @@
 	}
 
 	export let dimensions = {...defaults.dimensions}
-	export let debug = true
+	export let debug = false
 	export let id = 'table'
 
 	onMount( async () => {
@@ -171,8 +172,8 @@
 
 		if (!autohide) return
 
-		if (autohide && !dimensions?.row) dimensions.row = defaults.dimensions.row
-		if (autohide && !dimensions?.padding) dimensions.padding = defaults.dimensions.padding
+		if (autohide && dimensions?.row == undefined) dimensions.row = defaults.dimensions.row
+		if (autohide && dimensions?.padding == undefined) dimensions.padding = defaults.dimensions.padding
 
 
 		let tally = { above: 0, below: 0, first: null, last: null }
@@ -247,7 +248,7 @@
 				top: ${ to - scroll + (misc?.els?.table?.offsetHeight || 0) }px;`
 		}
 
-		if (exists) log(`${outside}px container: ${tally.above}/${len} above, ${tally.below}/${len} below, from ${tally.first} to ${tally.last}, ${len - (tally.above+tally.below)}/${len} visible, using height ${height}px`)
+		if (exists && debug) log(`${outside}px container: ${tally.above}/${len} above, ${tally.below}/${len} below, from ${tally.first} to ${tally.last}, ${len - (tally.above+tally.below)}/${len} visible, using height ${height}px`)
 
 		if (exists) misc.inited = true
 	}
@@ -284,6 +285,7 @@
 	}
 
 	function getSorted( _sortable, _id ) {
+		// if (features?.sortable?.direction == undefined) features.sortable.direction = false
 		const s = sort( _sortable, [...init.data], _id )
 		setTimeout( triggerScroll, 1 )
 		return s
@@ -313,7 +315,6 @@
 	{/if}
 
 	<tbody >
-
 		{#each data as item, idx }
 			<Tr {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} {item} type={'cell'} />
 

@@ -22,9 +22,11 @@
 				features.checkable[id] = event.target.checked
 			}
 		} else {	
-			(callbacks?.checked || defaults.checked)( { item, id, event } )
+			(callbacks?.checked || defaults.checked)( { id, event, checkable: features.checkable } )
 			features.checkable[ id ] = event.target.checked
 		}
+
+		
 	}
 
 	const special = `
@@ -64,7 +66,7 @@
 		<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} {colspan}
 			index={ -1 }
 			key={'stt-hidden-cell'}>
-			<div style={`height: ${dimensions.row}px`} />
+			<div style={`height: ${dimensions.row ? dimensions.row + 'px' : 'auto'}`} />
 		</Td>
 	</tr>
 
@@ -77,7 +79,7 @@
 		{style}>
 
 		{#if features.checkable}
-			<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} 
+			<Td {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} {id} {item} {type} 
 				index={ 0 }
 				key={'stt-checkable-cell'}>
 				<label 
@@ -92,7 +94,7 @@
 		{/if}
 
 		{#if features.rearrangeable}
-			<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type}
+			<Td {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} {id} {item} {type}
 				index={ offset - 1 }
 				key={'stt-rearrangeable-cell'}>
 				{#if type != 'key'}

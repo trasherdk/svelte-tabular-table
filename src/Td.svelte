@@ -21,15 +21,19 @@
 	let class_ = ''
 	export { class_ as class }
 
-	$: width = index == -1 ? '100%' : ( dimensions.widths || [] )[ index ]
+	$: width = index == -1 ? 100 : ( dimensions.widths || [] )[ index ]
 
 	$: _refresh = misc.refresh ?  ' ' : ''
 
 	$: _style = e => {
-		let s = 'overflow-wrap:break-word;box-sizing:content-box;'
+		let s = `
+			overflow-wrap:break-word;
+			box-sizing:content-box;
+			display: flex;
+			align-items: center;`
 		const whitespace = 'white-space: nowrap;overflow:hidden;text-overflow: ellipsis;'
-		const em = (dimensions.row || defaults.dimensions.row) + 'px;'
-		s += 'padding:' + (dimensions.padding || defaults.dimensions.padding) + 'px;'
+		const em = (dimensions.row ? dimensions.row + 'px;' : 'auto;' )
+		s += 'padding:' + dimensions.padding + 'px;'
 		s += features.autohide || dimensions.row ? whitespace + 'height:' + em  + 'line-height:' + em : '' 
 		return s
 	}
@@ -39,21 +43,33 @@
 		vertical-align:middle;
 		margin:0;
 		padding:0;
-		position:relative;
+		${ sticky ? 'position:sticky;top:0;' : 'position:relative;' }
 		${ sorting && type =='key' ? 'cursor:pointer' : ''}
-		${width?`width:${ isNaN(width) ? width : width + 'px'};`:''}`
+		${width?`width:${ isNaN(width) ? width : width + 'px' };`:''}`
 
 	$: hasSlot = $$props.$$slots
 
+	$: sticky = init.sticky && type == 'key'
 	$: obj = { id, item, key, value: item[key], index, type }
 	$: cbs = callbacks || {}
 	$: renderFunc = (cbs.render || {})[type] || defaults.render
 	$: clickFunc = (cbs.click || {})[type] || defaults.click
+	$: dblClickFunc = (cbs.dblclick || {})[type] || defaults.dblclick
+
+	let clickCount = 0
 
 	function onClick(obj, e) {
-		clickFunc( { ...obj, event: e } )
+
+		clickCount += 1
+		setTimeout(() => {
+			if (clickCount === 1) clickFunc( { ...obj, event: e } )
+			else if (clickCount === 2) dblClickFunc( { ...obj, event: e } )
+
+			clickCount = 0
+		}, 0);
+		
 		const exists = init.keys.indexOf( key ) != -1
-		if ( type == 'key' && exists && sorting) {
+		if ( type == 'key' && exists && sorting ) {
 			misc.reorder( { id, item, key, e} )
 		}
 	}
@@ -69,8 +85,9 @@
 
 <td style={tdStyle}
 	{colspan}
-	{width}
+	width={width || undefined}
 	class={ class_ + ' stt-'+slugify( key ) }
+	class:stt-sticky={sticky}
 	class:stt-sorted={ same }
 	class:stt-ascending={ same && direction }
 	class:stt-descending={ same && !direction }
@@ -84,7 +101,9 @@
 			<slot />
 		{/if}
 	{:else}
-		<div {style}>
+		<div 
+			class:chevron={ same && type == 'key'  }
+			{style}>
 			{#if !$$slots.default }
 				{#if component } <svelte:component this={renderFunc} {...obj} />
 				{:else} {@html render} {/if}
