@@ -10,24 +10,41 @@
 	export let misc
 	export let item
 	export let type // ie. cell or thead
+	export let rowIndex
+	export let classes = {}
 
 	export let indeterminate = false
 
 	$:id = item[ init?.index ] || init.data.indexOf(item)
 
+	function setChecked( id, event ) {
+		(callbacks?.checked || defaults.checked)( { id, event, checkable: features.checkable } )
+		features.checkable[id] = event.target.checked
+	}
+
 	function onChecked( event ) {
 		if ( type == 'key' ) {
 			for (let i = 0; i < init.data.length; i++) {
 				const id = init.data[i][init.index]
-				features.checkable[id] = event.target.checked
+				setChecked( id, event )
 			}
 		} else {	
-			(callbacks?.checked || defaults.checked)( { id, event, checkable: features.checkable } )
-			features.checkable[ id ] = event.target.checked
+			setChecked( id, event )
 		}
 
 		
 	}
+
+	function getClasses( classes_ ) {
+		let classStr = ''
+		for (const [c, arr] of Object.entries(classes_)) {
+			if ( (arr || []).indexOf( id ) != -1 && id != undefined ) {
+				classStr += ' ' + c
+			}
+		}
+		return classStr
+	}
+
 
 	const special = `
 		cursor:pointer;
@@ -63,8 +80,19 @@
 		class={ 'stt-'+slugify(id) }
 		data-key={ slugify(id) }
 		{style}>
-		<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {type} {colspan}
-			index={ -1 }
+		<Td 
+			{init} 
+			{dimensions} 
+			{debug} 
+			{callbacks} 
+			{features} 
+			{misc} 
+			{id} 
+			{item} 
+			{type} 
+			{colspan}
+			{rowIndex}
+			cellIndex={ -1 }
 			key={'stt-hidden-cell'}>
 			<div style={`height: ${dimensions.row ? dimensions.row + 'px' : 'auto'}`} />
 		</Td>
@@ -72,17 +100,28 @@
 
 {:else}
 	<tr bind:this={ misc.els.tr[ id ] }
-		class={ 'stt-'+slugify(id) }
+		class={ 'stt-'+slugify(id) + getClasses( classes ) }
 		class:stt-checked={checked }
 		class:stt-rearrangeable={ features.rearrangeable }
 		data-key={ slugify(id) }
 		{style}>
 
 		{#if features.checkable}
-			<Td {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} {id} {item} {type} 
-				index={ 0 }
+			<Td 
+				{init} 
+				{dimensions} 
+				{debug} 
+				{callbacks} 
+				bind:features={features} 
+				{misc} 
+				{id} 
+				{item} 
+				{type} 
+				cellIndex={ 0 }
+				{rowIndex}
 				key={'stt-checkable-cell'}>
 				<label 
+					class="checkbox stt-checkbox"
 					style={special}>
 					<input type="checkbox" 
 						{indeterminate}
@@ -94,8 +133,18 @@
 		{/if}
 
 		{#if features.rearrangeable}
-			<Td {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} {id} {item} {type}
-				index={ offset - 1 }
+			<Td 
+				{init} 
+				{dimensions} 
+				{debug} 
+				{callbacks} 
+				bind:features={features} 
+				{misc} 
+				{id} 
+				{item} 
+				{type}
+				cellIndex={ offset - 1 }
+				{rowIndex}
 				key={'stt-rearrangeable-cell'}>
 				{#if type != 'key'}
 					<div style={special} bind:this={ misc.els.handles[ id ] }>|||</div>
@@ -104,8 +153,19 @@
 		{/if}
 
 		{#each keys as key, idx}
-			<Td {init} {dimensions} {debug} {callbacks} {features} {misc} {id} {item} {key} {type} 
-				index={ offset + idx } />
+			<Td 
+				{init} 
+				{dimensions} 
+				{debug} 
+				{callbacks} 
+				{features} 
+				{misc} 
+				{id} 
+				{item} 
+				{key} 
+				{type} 
+				{rowIndex}
+				cellIndex={ offset + idx } />
 		{/each}
 	</tr>
 

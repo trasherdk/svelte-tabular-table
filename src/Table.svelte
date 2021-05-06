@@ -8,7 +8,9 @@
 	import dragdrop from 'svelte-native-drag-drop'
 	import { fade } from 'svelte/transition'
 	import { defaults, slugify } from './defaults.js'
+	import { createEventDispatcher } from 'svelte'
 
+	const dispatch = createEventDispatcher();
 
 	function warn( msg ) {
 		console.warn( `[svelte-tabular-table] ${msg}`)
@@ -31,7 +33,7 @@
 		for (let i = 0; i < len; i++ ) {
 			if (!init.data[i][init.index]) {
 				const id = 'id' + i
-				warn(`no property "${init.index}" in data item ${i}, defaulting to "${id}"`)
+				// warn(`no property "${init.index}" in data item ${i}, defaulting to "${id}"`)
 				init.data[i][init.index] = id
 				tally.added += 1
 			}
@@ -43,9 +45,12 @@
 			ids.push( init.data[i][init.index] )
 		}
 		const activ = tally.duped > 0 || tally.added > 0
-		if (activ ) warn( `${tally.duped}/${len} duplicate keys amended, ${tally.added}/${len} keys added`)
+		if (activ ) warn( `${init_?.name || ''} ${tally.duped}/${len} duplicate keys amended, ${tally.added}/${len} keys added`)
 
-		if ( !features.autohide ) misc.inited = true
+		if ( !features.autohide ) {
+			misc.inited = true
+			dispatch('inited')
+		}
 
 	}
 
@@ -57,6 +62,7 @@
 	export { style_ as style }
 
 	export let init = {
+		name: 'table',
 		keys: [], // array of text or array of objects
 		data: [],
 		index: null,
@@ -69,7 +75,10 @@
 	export let id = 'table'
 
 	onMount( async () => {
+
 	})
+
+	export let classes = {}
 
 	export let callbacks = {
 
@@ -82,14 +91,14 @@
 			key: defaults.render,
 			cell: defaults.render
 		},
-		checked: defaults.checked
+		checked: defaults.checked,
+		sort: defaults.sort
 	}
 
 	export let features = {
 		sortable: { 
 			key: null, 
-			direction: false, 
-			sort: defaults.sort
+			direction: false
 		}, 
 		rearrangeable: null, // <- callback event for rearranging with integer index (from, to) as arguments
 		checkable: null,
@@ -111,8 +120,6 @@
 			}
 		}
 	}
-
-
 
 	let hasDragDrop = false
 
@@ -248,9 +255,14 @@
 				top: ${ to - scroll + (misc?.els?.table?.offsetHeight || 0) }px;`
 		}
 
-		if (exists && debug) log(`${outside}px container: ${tally.above}/${len} above, ${tally.below}/${len} below, from ${tally.first} to ${tally.last}, ${len - (tally.above+tally.below)}/${len} visible, using height ${height}px`)
+		if (exists && debug) {
+			log(`${outside}px container: ${tally.above}/${len} above, ${tally.below}/${len} below, from ${tally.first} to ${tally.last}, ${len - (tally.above+tally.below)}/${len} visible, using height ${height}px`)
+		}
 
-		if (exists) misc.inited = true
+		if (exists) {
+			misc.inited = true
+			dispatch('inited')
+		}
 	}
 
 	const triggerScroll = e => onScroll( init, features?.autohide, dimensions )
@@ -285,7 +297,6 @@
 	}
 
 	function getSorted( _sortable, _id ) {
-		// if (features?.sortable?.direction == undefined) features.sortable.direction = false
 		const s = sort( _sortable, [...init.data], _id )
 		setTimeout( triggerScroll, 1 )
 		return s
@@ -293,10 +304,11 @@
 
 	$: isIndeterminate( features.checkable )
 
-	$: sort = features?.sortable?.sort || defaults.sort
+	$: sort = callbacks?.sort || defaults.sort
 	$: data = (features?.sortable?.key) ? getSorted( features.sortable, id ) : init.data
 
-	$: allStyles = `min-width:${dimensions.minwidth || '0'}px;width:100%;table-layout:fixed;border-spacing:0;${style_}`
+	$: tableLayout = dimensions.widths ? 'table-layout:fixed;' : ''
+	$: allStyles = `min-width:${dimensions.minwidth || '0'}px;width:100%;${tableLayout}border-spacing:0;${style_}`
 
 </script>
 <table 
@@ -309,14 +321,14 @@
 	{#if !init.nohead}
 		<thead>
 
-			<Tr {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} item={thead} type={'key'} {indeterminate} />
+			<Tr {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} item={thead} type={'key'} {indeterminate} rowIndex={-1} />
 		</thead>
 
 	{/if}
 
 	<tbody >
 		{#each data as item, idx }
-			<Tr {init} {dimensions} {debug} {callbacks} bind:features={features} {misc} {item} type={'cell'} />
+			<Tr {init} {classes} {dimensions} {debug} {callbacks} bind:features={features} {misc} {item} rowIndex={idx} type={'cell'} />
 
 		{/each}
 	</tbody>

@@ -3,7 +3,8 @@
 	export let item
 	export let key
 	export let value
-	export let index
+	export let rowIndex
+	export let cellIndex
 	export let type
 </script>
 
@@ -14,11 +15,11 @@
 {:else if (key == 'registered')}
 	<em>{ ( new Date( value ) ).toDateString() }</em>
 {:else if (key == 'about')}
-	<marquee>{value}</marquee>
+	{value}
 {:else if (key == 'name')}
 	<blink style="color:rgb(255,62,0)">{value}</blink>
 {:else if (key == 'latitude' || key =='longitude' )}
 	<code>{value}</code>
 {:else}
 	{value}
-{/if}
+{/if} 

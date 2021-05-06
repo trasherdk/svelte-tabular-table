@@ -13,7 +13,8 @@
 	export let id
 	export let item
 	export let key
-	export let index
+	export let rowIndex
+	export let cellIndex
 	export let type
 	export let colspan = 1
 
@@ -21,20 +22,25 @@
 	let class_ = ''
 	export { class_ as class }
 
-	$: width = index == -1 ? 100 : ( dimensions.widths || [] )[ index ]
+	$: width = cellIndex == -1 ? 100 : ( dimensions.widths || [] )[ cellIndex ]
 
 	$: _refresh = misc.refresh ?  ' ' : ''
 
 	$: _style = e => {
+
 		let s = `
 			overflow-wrap:break-word;
 			box-sizing:content-box;
 			display: flex;
 			align-items: center;`
+			
+		const rowDefined = dimensions.row != undefined
+		const paddDefined = dimensions.padding != undefined
+
 		const whitespace = 'white-space: nowrap;overflow:hidden;text-overflow: ellipsis;'
-		const em = (dimensions.row ? dimensions.row + 'px;' : 'auto;' )
-		s += 'padding:' + dimensions.padding + 'px;'
-		s += features.autohide || dimensions.row ? whitespace + 'height:' + em  + 'line-height:' + em : '' 
+		const em = rowDefined ? dimensions.row + 'px;' : 'auto;'
+		if (paddDefined) s += 'padding:' + dimensions.padding + 'px;'
+		s += features.autohide || rowDefined ? whitespace + 'height:' + em  + 'line-height:' + em : '' 
 		return s
 	}
 	$: style = _style()
@@ -50,7 +56,7 @@
 	$: hasSlot = $$props.$$slots
 
 	$: sticky = init.sticky && type == 'key'
-	$: obj = { id, item, key, value: item[key], index, type }
+	$: obj = { id, item, key, value: item[key], cellIndex, rowIndex, type }
 	$: cbs = callbacks || {}
 	$: renderFunc = (cbs.render || {})[type] || defaults.render
 	$: clickFunc = (cbs.click || {})[type] || defaults.click
@@ -82,34 +88,72 @@
 </script>
 
 
+<!-- not the best solution for TD/TH, but will have to do -->
 
-<td style={tdStyle}
-	{colspan}
-	width={width || undefined}
-	class={ class_ + ' stt-'+slugify( key ) }
-	class:stt-sticky={sticky}
-	class:stt-sorted={ same }
-	class:stt-ascending={ same && direction }
-	class:stt-descending={ same && !direction }
-	data-key={ key }
-	on:click={ e => onClick(obj, e) }>
-	{#if init.nodiv}
-		{#if !$$slots.default }
-			{#if component } <svelte:component this={renderFunc} {...obj} />
-			{:else} {@html render} {/if}
-		{:else}
-			<slot />
-		{/if}
-	{:else}
-		<div 
-			class:chevron={ same && type == 'key'  }
-			{style}>
+{#if type == 'key'}
+
+	<th style={tdStyle}
+		{colspan}
+		width={width || undefined}
+		class={ class_ + ' stt-'+slugify( key ) }
+		class:stt-sticky={sticky}
+		class:stt-sorted={ same }
+		class:stt-ascending={ same && direction }
+		class:stt-descending={ same && !direction }
+		data-key={ key }
+		on:click={ e => onClick(obj, e) }>
+		{#if init.nodiv}
 			{#if !$$slots.default }
 				{#if component } <svelte:component this={renderFunc} {...obj} />
 				{:else} {@html render} {/if}
 			{:else}
 				<slot />
 			{/if}
-		</div>
-	{/if}
-</td>
+		{:else}
+			<div 
+				class:chevron={ same && type == 'key'  }
+				{style}>
+				{#if !$$slots.default }
+					{#if component } <svelte:component this={renderFunc} {...obj} />
+					{:else} {@html render} {/if}
+				{:else}
+					<slot />
+				{/if}
+			</div>
+		{/if}
+	</th>
+
+{:else}
+
+	<td style={tdStyle}
+		{colspan}
+		width={width || undefined}
+		class={ class_ + ' stt-'+slugify( key ) }
+		class:stt-sticky={sticky}
+		class:stt-sorted={ same }
+		class:stt-ascending={ same && direction }
+		class:stt-descending={ same && !direction }
+		data-key={ key }
+		on:click={ e => onClick(obj, e) }>
+		{#if init.nodiv}
+			{#if !$$slots.default }
+				{#if component } <svelte:component this={renderFunc} {...obj} />
+				{:else} {@html render} {/if}
+			{:else}
+				<slot />
+			{/if}
+		{:else}
+			<div 
+				class:chevron={ same && type == 'key'  }
+				{style}>
+				{#if !$$slots.default }
+					{#if component } <svelte:component this={renderFunc} {...obj} />
+					{:else} {@html render} {/if}
+				{:else}
+					<slot />
+				{/if}
+			</div>
+		{/if}
+	</td>
+
+{/if}

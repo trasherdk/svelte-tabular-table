@@ -6,6 +6,7 @@
 	import Auto from './Auto.svelte'
 	import data from './data.js'
 	import docs from './docs.js'
+	import APICell from './APICell.svelte'
 
 	let turndown = new TurndownService( { preformattedCode: true } )
 	turndown.use(tables)
@@ -16,33 +17,42 @@
 	let many = []
 	for (let i = 0; i < 100; i++) many = many.concat( data )
 
+	let selected
+	let clicked = []
+
 	const all = [
 
 		{
 			id: 'Basic',
 			init: {
+				name: 'basic-example',
 				keys: ['name', 'balance', 'address', 'company'],
 				index: '_id',
+				nohead: false,
+				nodiv: false,
 				data
 			}
 		}, 
 		{
 			id: 'Dimensions',
 			init: {
+				name: 'dimensions-example',
 				keys: ['age', 'latitude', 'longitude', 'name', 'about'],
 				index: '_id',
 				data
 			},
 			dimensions: {
-				row: 14,
-				padding: 0,
-				widths: [50,100,100,150]
+				row: 16,
+				padding: 10,
+				widths: [50,100,100,150],
+				minwidth: 400
 			}
 		},
 		{
 			id: 'Sortable',
 			init: {
-				keys: ['name', 'balance', 'company', 'latitude', 'longitude', 'tags'],
+				name: 'sortable-example',
+				keys: ['name', 'balance', 'company', 'latitude', 'longitude'],
 				index: '_id',
 				data
 			},
@@ -55,6 +65,7 @@
 		{
 			id: 'Checkable',
 			init: {
+				name: 'checkable-example',
 				keys: ['name', 'balance', 'company', 'email', 'tags'],
 				index: '_id',
 				data
@@ -69,6 +80,7 @@
 		{
 			id: 'Rearrangeable',
 			init: {
+				name: 'rearrangeable-example',
 				keys: ['name', 'balance', 'company'],
 				index: '_id',
 				data
@@ -80,6 +92,7 @@
 		{
 			id: 'Autohide (1)',
 			init: {
+				name: 'autohide-1-example',
 				keys: ['name', 'balance', 'company', 'latitude', 'longitude', 'tags'],
 				index: '_id',
 				data: many,
@@ -92,6 +105,7 @@
 		{
 			id: 'Autohide (2)',
 			init: {
+				name: 'autohide-2-example',
 				keys: ['name', 'balance', 'company', 'latitude', 'longitude', 'tags'],
 				index: '_id',
 				data: many,
@@ -104,27 +118,33 @@
 		{
 			id: 'Callbacks',
 			init: {
+				name: 'callbacks-example',
 				keys: ['name', 'balance', 'company', 'latitude', 'longitude'],
 				index: '_id',
 				data
 			},
 			callbacks: {
 				render: {
-					cell: o => ['🌱','☘️','🥬','🌿','🥒'][o.index] ,
-					key: o => ['🌴','🌲','🌳','🏔','🥦'][o.index],
+					cell: o => ['🌱','☘️','🥬','🌿','🥒'][o.cellIndex] ,
+					key: o => ['🌴','🌲','🌳','🏔','🥦'][o.cellIndex],
 				},
 				click: {
-					cell: o => alert( ['🌴','🌲','🌳','🏔','🥦'][o.index] ) ,
-					key: o => alert( ['🌱','☘️','🥬','🌿','🥒'][o.index] ),
+					cell: o => alert( ['🌴','🌲','🌳','🏔','🥦'][o.cellIndex] ) ,
+					key: o => alert( ['🌱','☘️','🥬','🌿','🥒'][o.cellIndex] ),
 				}
 			}
 		},
 		{
 			id: 'Components',
 			init: {
+				name: 'components-example',
 				keys: ['name', 'latitude', 'longitude', 'registered', 'about'],
 				index: '_id',
 				data
+			},
+			dimensions: {
+				padding: 10,
+				widths: [null,null,null,null,'50%']
 			},
 			callbacks: {
 				render: {
@@ -133,9 +153,35 @@
 				}
 			}
 		},
+		{
+			id: 'Classes',
+			init: {
+				name: 'classes-example',
+				keys: ['name', 'about'],
+				index: '_id',
+				data
+			},
+			dimensions: {
+				padding: 10,
+				widths: [200]
+			},
+			callbacks: {
+				click: {
+					cell: o => {
+						selected = o.id
+						clicked.push( o.id )
+					}
+				}
+			}
+		}
 
 
 	]
+
+	$: classes = {
+		selected: [ selected ],
+		clicked: clicked
+	}
 
 
 	const scroller = `
@@ -241,10 +287,10 @@
 			<div class:hidden={ nav != slugify(table.id) } style="margin: 3em 0em">
 				<h1>
 					Example {idx + 1} - {table.id}
-					<code 
+					<span 
 						class:filled={code}
 						on:click={e => code = !code }
-						class="cc">{'</>'}</code>
+						class="cc monospace">{'</>'}</span>
 				</h1>
 				<p>{@html docs[ table.id ]?.meta || ''}</p>
 
@@ -269,7 +315,7 @@
 							<Table { ...table } features={ { autohide: autohide[ table.id ] } } />
 						</div>
 					{:else}
-						<Table {...table} />
+						<Table {...table} classes={ table.id.indexOf('Classes') != -1 ? classes : {} } />
 					{/if}
 				</div>
 
@@ -284,20 +330,17 @@
 			</h1>
 			{@html docs['APIDocs']}
 			<div style="overflow: auto; width: 100%;border:1px solid #333">
-				<Table style="font-size:12px;min-width:1200px;border:none" init={{
+				<Table style="border:none" init={{
+					name: 'api-documentation',
 					data: docs['API'],
 					keys: ['Name', 'Description', 'Types', 'Default', 'Example'],
 					index: 'name'
 				}} dimensions={{
-					widths: [ 220, null, 210, 120, 260 ]
+					minwidth: 1200,
+					padding: 10
 				}} callbacks={{
 					render: {
-						cell: o => {
-							if (o.key == 'types' || o.key == 'description') return `
-								<span>${o.value}</span>
-							`
-							return `<span style="font-family:monospace;">${o.value}</span>`
-						}
+						cell: APICell
 					}
 				}} />
 			</div>

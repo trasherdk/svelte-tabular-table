@@ -27,7 +27,7 @@ export default {
 		add( 
 			'init.data',
 			['Array:Object'],
-			`[ { color: 'blue', id: '001' }, {color: 'red', id: '002' } ]`,
+			`[{ color: 'blue', id: '001' }]`,
 			'list of rows',
 			`null`
 		),
@@ -82,6 +82,13 @@ export default {
 			`[ 100, "20%", "40px", 10]`,
 			'width of each column',
 			`[]`
+		),
+		add( 
+			'dimensions.minwidth',
+			['Array:Integer', 'Array:String'],
+			`100, "20%", "40px", 10`,
+			'mininum width of table',
+			`null`
 		),
 
 		// ---------------------
@@ -239,6 +246,9 @@ export default {
 			init: {
 				keys: ['name', 'balance', 'address', 'company'],
 				index: '_id',
+				name: 'basic-example',
+				nohead: false,
+				nodiv: false,
 				data
 			}`)
 	},
@@ -248,7 +258,8 @@ export default {
 			<ul>
 				<li><code>dimensions.row</code> - sets row height and cuts overflowing cells with an ellipsis (<code>...</code>)</li>
 				<li><code>dimensions.padding</code> - sets cell padding</li>
-				<li><code>dimensions.widths</code> - sets an array of widths for each column</li>
+				<li><code>dimensions.widths</code> - sets an array of widths for each column (can be int or string "10em", "50%", etc)</li>
+				<li><code>dimensions.minwidth</code> - minimum width of table (int or string)</li>
 			</ul>
 			When using <code>features.autohide</code> it is important to set dimensions, so that each row is a consistent height.`,
 		code: generate(`
@@ -258,9 +269,11 @@ export default {
 				data
 			},
 			dimensions: {
-				row: 14,
-				padding: 0,
-				widths: [50,100,100,150]
+				name: 'dimensions-example',
+				row: 16,
+				padding: 10,
+				widths: [50,100,100,150],
+				minwidth: 400
 			}`)
 	},
 	'Sortable': {
@@ -268,6 +281,7 @@ export default {
 			Sortable headers can be initialised by setting <code>features.sortable.key</code> to an initial value and <code>features.sortable.direction</code> to <code>true (ascending)</code> or <code>false (descending)</code>.`,
 		code: generate(`
 			init: {
+				name: 'sortable-example',
 				keys: ['name', 'balance', 'company', 'latitude', 'longitude', 'tags'],
 				index: '_id',
 				data
@@ -283,6 +297,7 @@ export default {
 			Checkable rows are initialised by passing a blank <code>{}</code> object to <code>features.checkable</code>, which will be set via <code>init.index</code>.`,
 		code: generate(`
 			init: {
+				name: 'checkable-example',
 				keys,
 				index: '_id',
 				data
@@ -299,6 +314,7 @@ export default {
 			Rearrangeable rows are initialised by passing a callback function to <code>features.rearrangeable</code>, which will return the <em>from</em> and <em>to</em> indexes as an integer: <code>( from, to ) => ...</code>`,
 		code: generate(`
 			init: {
+				name: 'rearrangeable-example',
 				keys: ['name', 'balance', 'company'],
 				index: '_id',
 				data
@@ -315,9 +331,10 @@ export default {
 				<li><code>features.autohide.position</code> - is the current scrollTop / scrollY position, and must be manually updated from your own <code>on:scroll</code> event</li>
 				<li><code>features.autohide.buffer</code> - sets extra space before rows are hidden as a multiple of <code>container.offsetHeight</code> (ie. 0.5 * 400 = 200px buffer)</li>
 			</ul>
-			Example using <em>window</em> as container, with <code>buffer</code> set to <code>-0.1</code> (to illustrate hidden rows):`,
+			Example is using <code>window</code> as container with <strong><code>buffer</code> set to minus <code>-0.1</code> to illustrate limits of hidden row edges</strong>:`,
 		code: generate(`
 			init: {
+				name: 'autohide-1-example',
 				keys,
 				index: '_id',
 				data: many,
@@ -339,6 +356,7 @@ export default {
 			Example using a <em>container</em>, see <a href="#autohide-1">Autohide (1)</a>:`,
 		code: generate(`
 			init: {
+				name: 'autohide-2-example',
 				keys,
 				index: '_id',
 				data: many,
@@ -359,24 +377,25 @@ export default {
 		meta: `
 			Callbacks can be defined for:
 			<ul>
-				<li><code>callbacks.render.cell</code> or <code>callbacks.render.key</code> - returning with <code>{id, item, key, value, index}</code> argument *</li>
-				<li><code>callbacks.click.cell</code> or <code>callbacks.click.key</code> - returning with <code>{id, item, key, value, index, <em>event</em>}</code> argument</li>
+				<li><code>callbacks.render.cell</code> or <code>callbacks.render.key</code> - returning with <code>{id, item, key, value, rowIndex, cellIndex}</code> argument *</li>
+				<li><code>callbacks.click.cell</code> or <code>callbacks.click.key</code> - returning with <code>{id, item, key, value, rowIndex, cellIndex, <em>event</em>}</code> argument</li>
 			</ul>
 			* Render callback can also be a component reference (see <a href="#components">Example 9 - Components</a>):`,
 		code: generate(`
 			init: {
+				name: 'callbacks-example',
 				keys: ['name', 'balance', 'company', 'latitude', 'longitude'],
 				index: '_id',
 				data
 			},
 			callbacks: {
 				render: {
-					cell: o => ['🌱','☘️','🥬','🌿','🥒'][o.index] ,
-					key: o => ['🌴','🌲','🌳','🏔','🥦'][o.index],
+					cell: o => ['🌱','☘️','🥬','🌿','🥒'][o.cellIndex] ,
+					key: o => ['🌴','🌲','🌳','🏔','🥦'][o.cellIndex],
 				},
 				click: {
-					cell: o => alert( ['🌴','🌲','🌳','🏔','🥦'][o.index] ) ,
-					key: o => alert( ['🌱','☘️','🥬','🌿','🥒'][o.index] ),
+					cell: o => alert( ['🌴','🌲','🌳','🏔','🥦'][o.cellIndex] ) ,
+					key: o => alert( ['🌱','☘️','🥬','🌿','🥒'][o.cellIndex] ),
 				}
 			}`)
 	},
@@ -385,6 +404,7 @@ export default {
 			In place of a callback render function, a <code>svelte:component</code> can be used with the properties <code>{id, item, key, value, index}</code>:`,
 		code: generate(`
 			init: {
+				name: 'components-example',
 				keys: ['picture', 'name', 'latitude', 'longitude', 'registered', 'about'],
 				index: '_id',
 				data
@@ -395,6 +415,31 @@ export default {
 					key: Auto,
 				}
 			},`, true)
+	},
+	'Classes': {
+		meta: `
+			The classes object is a list of classes that are applied to a row based on it's <code>id</code>. <br />In this example we are setting an <span class="orange">orange</span> and <span class="yellow">yellow</span> background class when a cell item is clicked:`,
+		code: generate(`
+			init: {
+				name: 'classes-example',
+				keys: ['name', 'balance', 'company', 'latitude', 'longitude', 'tags'],
+				index: '_id',
+				data
+			},
+			classes: {
+				orange_background: [ selected ],
+				yellow_background: clicked
+
+			},
+			callbacks: {
+				click: {
+					cell: o => {
+					selected = o.id
+					clicked.push( o.id )
+					}
+				}
+			}
+		`, true)
 	}
 
 
