@@ -24,7 +24,6 @@
 
 	$: width = cellIndex == -1 ? 100 : ( dimensions.widths || [] )[ cellIndex ]
 
-	$: _refresh = misc.refresh ?  ' ' : ''
 
 	$: _style = e => {
 
@@ -82,9 +81,12 @@
 	$: sorting = features?.sortable?.key
 	$: direction = features?.sortable?.direction
 	$: same = sorting == key
-
-	$: render = component ? null : (renderFunc( obj ) || '') + _refresh
+	$: render = component ? null : (renderFunc( obj ) || '')
 	$: component = Object.getOwnPropertyNames(renderFunc).indexOf('prototype') != -1
+
+	function getRender( obj ) {
+		return component ? null : (renderFunc( obj ) || '')
+	}
 </script>
 
 
@@ -105,7 +107,7 @@
 		{#if init.nodiv}
 			{#if !$$slots.default }
 				{#if component } <svelte:component this={renderFunc} {...obj} />
-				{:else} {@html render} {/if}
+				{:else} {obj.key} {/if}
 			{:else}
 				<slot />
 			{/if}
@@ -115,7 +117,7 @@
 				{style}>
 				{#if !$$slots.default }
 					{#if component } <svelte:component this={renderFunc} {...obj} />
-					{:else} {@html render} {/if}
+					{:else} {obj.key} {/if}
 				{:else}
 					<slot />
 				{/if}
@@ -148,7 +150,7 @@
 				{style}>
 				{#if !$$slots.default }
 					{#if component } <svelte:component this={renderFunc} {...obj} />
-					{:else} {@html render} {/if}
+					{:else} {@html render}{/if}
 				{:else}
 					<slot />
 				{/if}
