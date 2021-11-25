@@ -33,7 +33,6 @@
     "dist"
   ],
   "dependencies": {
-    "query-string": "^7.0.0",
     "svelte-native-drag-drop": "^1.0.4"
   },
   "directories": {

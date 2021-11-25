@@ -4,7 +4,6 @@
 	import Tr from './Tr.svelte'
 	import Td from './Td.svelte'
 	import { onMount, onDestroy } from 'svelte'
-	import queryString from 'query-string'
 	import dragdrop from 'svelte-native-drag-drop'
 	import { fade } from 'svelte/transition'
 	import { defaults, slugify } from './defaults.js'
