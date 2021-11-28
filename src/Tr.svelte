@@ -15,7 +15,7 @@
 
 	export let indeterminate = false
 
-	$:id = item[ init?.index ] || init.data.indexOf(item)
+	$:id = item[ init?.index ] || init?.data.indexOf(item)
 
 	function setChecked( id, event ) {
 		(callbacks?.checked || defaults.checked)( { id, event, checkable: features.checkable } )

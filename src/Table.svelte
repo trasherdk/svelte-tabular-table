@@ -120,9 +120,11 @@
 	}
 
 	let hasDragDrop = false
+	let isDestroying = false
 
 	onDestroy( async () => { 
 		if ( hasDragDrop ) dragdrop.clear('table')
+		isDestroying = true
 	})
 
 
@@ -294,11 +296,6 @@
 
 	}
 
-	function getSorted( _sortable, _id ) {
-		const s = sort( _sortable, [...init.data], _id )
-		setTimeout( triggerScroll, 1 )
-		return s
-	}
 
 	$: isIndeterminate( features.checkable )
 
@@ -318,11 +315,11 @@
 				features.sortable.direction, 
 				init.data, 
 				( neue => {
-					console.log('RECEIVED', neue.length)
+					if (isDestroying) return
 					data = data.concat( neue )
-					setTimeout( triggerScroll, 1 )
 				})
 			)
+			setTimeout( triggerScroll, 1 )
 		} else {
 			data = init.data
 		}

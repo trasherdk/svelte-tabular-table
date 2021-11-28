@@ -26,10 +26,18 @@ export const defaults = {
 				u => u.updated
 			])
 
+			const min = 20
+			let increase = 1
+
 			function sendCallback() {
 				if ( timestamp != SORT_TIMESTAMP ) return
-				callback( [ copy[idx] ] )
-				idx += 1
+				let neu = []
+				for (let i = 0; i < increase; i++ ) {
+					if (copy[idx]) neu.push( copy[idx] )
+					idx += 1
+				}
+				if ( idx > min ) increase += 1
+				callback( neu )
 				if (idx < copy.length) window.requestAnimationFrame( sendCallback )
 			}
 
