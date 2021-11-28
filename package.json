@@ -1,6 +1,6 @@
 {
   "name": "svelte-tabular-table",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Fully-featured, lightweight table component for Svelte JS",
   "author": "G.Sinnott",
   "license": "MIT",
@@ -33,6 +33,7 @@
     "dist"
   ],
   "dependencies": {
+    "fast-sort": "^3.1.1",
     "svelte-native-drag-drop": "^1.0.4"
   },
   "directories": {

@@ -108,7 +108,6 @@
 		hidden: {},
 		els: { table: null, thead: null, tr: {}, td: {}, handles: {}, drops: {} },
 		inited: false,
-		refresh: true,
 		reorder: o => {
 			const key = features?.sortable?.key
 			features.sortable.direction = !features.sortable.direction
@@ -121,9 +120,11 @@
 	}
 
 	let hasDragDrop = false
+	let isDestroying = false
 
 	onDestroy( async () => { 
 		if ( hasDragDrop ) dragdrop.clear('table')
+		isDestroying = true
 	})
 
 
@@ -295,16 +296,34 @@
 
 	}
 
-	function getSorted( _sortable, _id ) {
-		const s = sort( _sortable, [...init.data], _id )
-		setTimeout( triggerScroll, 1 )
-		return s
-	}
 
 	$: isIndeterminate( features.checkable )
 
-	$: sort = callbacks?.sort || defaults.sort
-	$: data = (features?.sortable?.key) ? getSorted( features.sortable, id ) : init.data
+
+	let data = []
+
+	let previousSortEvent
+	$: ( (_key, _direction) => {
+		const sortEvent = _key + _direction + init.data.length
+		if (sortEvent == previousSortEvent) return
+		previousSortEvent = sortEvent
+		if (_key) {
+			const fn = (callbacks?.sort || defaults.sort)
+			data = []
+			fn( 
+				features.sortable.key, 
+				features.sortable.direction, 
+				init.data, 
+				( neue => {
+					if (isDestroying) return
+					data = data.concat( neue )
+				})
+			)
+			setTimeout( triggerScroll, 1 )
+		} else {
+			data = init.data
+		}
+	})( features?.sortable?.key, features?.sortable?.direction )
 
 	$: tableLayout = dimensions.widths ? 'table-layout:fixed;' : ''
 	$: allStyles = `min-width:${dimensions.minwidth || '0'}px;width:100%;${tableLayout}border-spacing:0;${style_}`
