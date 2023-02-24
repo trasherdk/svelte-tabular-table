@@ -28,9 +28,11 @@ Basic configuration:
 *   `init.nohead` - a boolean to remove thead
 *   `init.nodiv` - a boolean to render without div \*\*
 
-\* If no valid `init.index` is set, or if there are duplicate values inside data, the table will attempt to generate unique keys.  
+\* If no valid `init.index` is set, or if there are duplicate values inside data, the table will attempt to generate unique keys.
+
 \*\* Enabling this means `dimensions` and `features.autohide` will not work.
 
+```html
     <script>
     import { Table } from 'svelte-tabular-table'
     const config = {
@@ -45,6 +47,7 @@ Basic configuration:
     }
     </script>
     <Table {...config} />
+```
 
 ### [Example 2 - Dimensions](https://autr.github.io/svelte-tabular-table#dimensions)
 
@@ -57,6 +60,7 @@ Dimensions control the formatting of the table:
 
 When using `features.autohide` it is important to set dimensions, so that each row is a consistent height.
 
+```html
     <script>
     import { Table } from 'svelte-tabular-table'
     const config = {
@@ -75,11 +79,13 @@ When using `features.autohide` it is important to set dimensions, so that each r
     }
     </script>
     <Table {...config} />
+```
 
 ### [Example 3 - Sortable](https://autr.github.io/svelte-tabular-table#sortable)
 
 Sortable headers can be initialised by setting `features.sortable.key` to an initial value and `features.sortable.direction` to `true (ascending)` or `false (descending)`.
 
+```html
     <script>
     import { Table } from 'svelte-tabular-table'
     const config = {
@@ -97,11 +103,13 @@ Sortable headers can be initialised by setting `features.sortable.key` to an ini
     }
     </script>
     <Table {...config} />
+```
 
 ### [Example 4 - Checkable](https://autr.github.io/svelte-tabular-table#checkable)
 
 Checkable rows are initialised by passing a blank `{}` object to `features.checkable`, which will be set via `init.index`.
 
+```html
     <script>
     import { Table } from 'svelte-tabular-table'
     const config = {
@@ -120,11 +128,13 @@ Checkable rows are initialised by passing a blank `{}` object to `features.check
     }
     </script>
     <Table {...config} />
+```
 
 ### [Example 5 - Rearrangeable](https://autr.github.io/svelte-tabular-table#rearrangeable)
 
 Rearrangeable rows are initialised by passing a callback function to `features.rearrangeable`, which will return the _from_ and _to_ indexes as an integer: `( from, to ) => ...`
 
+```html
     <script>
     import { Table } from 'svelte-tabular-table'
     const config = {
@@ -140,6 +150,7 @@ Rearrangeable rows are initialised by passing a callback function to `features.r
     }
     </script>
     <Table {...config} />
+```
 
 ### [Example 6 - Autohide (1)](https://autr.github.io/svelte-tabular-table#autohide-1)
 
@@ -151,6 +162,7 @@ Autohide will stop rows that are currently not in view from rendering - increasi
 
 Example is using `window` as container with **`buffer` set to minus `-0.1` to illustrate limits of hidden row edges**:
 
+```html
     <script>
     import { Table } from 'svelte-tabular-table'
     const config = {
@@ -174,11 +186,13 @@ Example is using `window` as container with **`buffer` set to minus `-0.1` to il
     }
     </script>
     <Table {...config} />
+```
 
 ### [Example 7 - Autohide (2)](https://autr.github.io/svelte-tabular-table#autohide-2)
 
 Example using a _container_, see [Autohide (1)](#autohide-1):
 
+```html
     <script>
     import { Table } from 'svelte-tabular-table'
     const config = {
@@ -202,6 +216,7 @@ Example using a _container_, see [Autohide (1)](#autohide-1):
     }
     </script>
     <Table {...config} />
+```
 
 ### [Example 8 - Callbacks](https://autr.github.io/svelte-tabular-table#callbacks)
 
@@ -212,6 +227,7 @@ Callbacks can be defined for:
 
 \* Render callback can also be a component reference (see [Example 9 - Components](#components)):
 
+```html
     <script>
     import { Table } from 'svelte-tabular-table'
     const config = {
@@ -234,11 +250,13 @@ Callbacks can be defined for:
     }
     </script>
     <Table {...config} />
+```
 
 ### [Example 9 - Components](https://autr.github.io/svelte-tabular-table#components)
 
 In place of a callback render function, a `svelte:component` can be used with the properties `{id, item, key, value, index}`:
 
+```html
     <script>
     import Auto from './Auto.svelte'
     import { Table } from 'svelte-tabular-table'
@@ -258,9 +276,11 @@ In place of a callback render function, a `svelte:component` can be used with th
     }
     </script>
     <Table {...config} />
-    
-    // --- Auto.svelte ---
-    
+```
+
+`Auto.svelte`
+
+```html
     <script>
         export let id
         export let item
@@ -269,7 +289,7 @@ In place of a callback render function, a `svelte:component` can be used with th
         export let index
         export let type
     </script>
-    
+
     {#if type == 'key'}
         <b style="letter-spacing: 0.2em">{value}</b>
     {:else if (key == 'picture')}
@@ -285,12 +305,14 @@ In place of a callback render function, a `svelte:component` can be used with th
     {:else}
         {value}
     {/if}
+```
 
 ### [Example 10 - Classes](https://autr.github.io/svelte-tabular-table#classes)
 
-The classes object is a list of classes that are applied to a row based on it's `id`.  
+The classes object is a list of classes that are applied to a row based on it's `id`.
 In this example we are setting an orange and yellow background class when a cell item is clicked:
 
+```html
     <script>
     import Auto from './Auto.svelte'
     import { Table } from 'svelte-tabular-table'
@@ -304,7 +326,7 @@ In this example we are setting an orange and yellow background class when a cell
         classes: {
             orange_background: [ selected ],
             yellow_background: clicked
-    
+
         },
         callbacks: {
             click: {
@@ -314,13 +336,14 @@ In this example we are setting an orange and yellow background class when a cell
                 }
             }
         }
-            
+
     }
     </script>
     <Table {...config} />
-    
-    // --- Auto.svelte ---
-    
+```
+
+`Auto.svelte`
+```html
     <script>
         export let id
         export let item
@@ -329,7 +352,7 @@ In this example we are setting an orange and yellow background class when a cell
         export let index
         export let type
     </script>
-    
+
     {#if type == 'key'}
         <b style="letter-spacing: 0.2em">{value}</b>
     {:else if (key == 'picture')}
@@ -345,6 +368,7 @@ In this example we are setting an orange and yellow background class when a cell
     {:else}
         {value}
     {/if}
+```
 
 API Documentation
 =================
@@ -356,30 +380,35 @@ Properties are categorised:
 *   `features` - sortable, checkable, rearrangeable, autohide
 *   `callbacks` - cell rendering and events
 
+```html
+  <script>
     import { Table } from 'svelte-tabular-table'
-    <Table {init} {dimensions} {features} {callbacks} {id} {class} {style} {debug} />
+  </script>
 
-| Name | Description | Types | Default | Example |
-| --- | --- | --- | --- | --- |
-| init.data | list of rows | Array:Object | null | \[{ color: 'blue', id: '001' }\] |
-| init.keys | list of columns | Array:String | null | \[ 'color', 'id' \] |
-| init.index | unique index | String | null | id |
-| init.nohead | dont render thead | Boolean | false | true |
-| init.nodiv | dont render div | Boolean | false | true |
-| dimensions.row | height of each row | Integer,String | null | 10, "2em" |
-| dimensions.padding | padding of each row | Integer,String | 10 | 10, "1em" |
-| dimensions.widths | width of each column | Array:Integer,Array:String | \[\] | \[ 100, "20%", "40px", 10\] |
-| dimensions.minwidth | mininum width of table | Array:Integer,Array:String | null | 100, "20%", "40px", 10 |
-| features.sortable.key | initial sorting key (enables sortable) | String | null | "color" |
-| features.sortable.direction | ascending or descending | Boolean | false | true |
-| features.checkable | blank object (enables checkable) | Object | null | {} |
-| features.rearrangeable | callback (enables rearrangeable) | Function | null | (a,b) => alert(\`from ${a} to ${b}\`) |
-| features.autohide.container | DOM element (enables autohide) | Element | null | bind:this={domElement},window |
-| features.autohide.position | current scroll position (set externally) | Integer | 0 | on:scroll=>{setPosition} |
-| features.autohide.buffer | extend area (multiple of container height) | Float | 0 | 2 |
-| callbacks.render.key|cell | rendering callback or SvelteComponent | Function,SvelteComponent | o => o.value | o => 'hello world' |
-| callbacks.click.key|cell | cell or key click callback | Function | null | o => alert(\`${o.id} clicked!\`) |
-| id | id attribute of table | String | table | table-1 |
-| class | class attribute of table | String |  | table |
-| id | style attribute of table | String |  | background:red |
-| debug | debugging console log | Boolean | false | true |
+  <Table {init} {dimensions} {features} {callbacks} {id} {class} {style} {debug} />
+```
+
+| Name                        | Description                                | Types                                 | Default                  | Example                               |
+| --------------------------- | ------------------------------------------ | ------------------------------------- | ------------------------ | ------------------------------------- |
+| init.data                   | list of rows                               | Array:Object                          | null                     | \[{ color: 'blue', id: '001' }\]      |
+| init.keys                   | list of columns                            | Array:String                          | null                     | \[ 'color', 'id' \]                   |
+| init.index                  | unique index                               | String                                | null                     | id                                    |
+| init.nohead                 | dont render thead                          | Boolean                               | false                    | true                                  |
+| init.nodiv                  | dont render div                            | Boolean                               | false                    | true                                  |
+| dimensions.row              | height of each row                         | Integer,String                        | null                     | 10, "2em"                             |
+| dimensions.padding          | padding of each row                        | Integer,String                        | 10                       | 10, "1em"                             |
+| dimensions.widths           | width of each column                       | Array:Integer,Array:String            | \[\]                     | \[ 100, "20%", "40px", 10\]           |
+| dimensions.minwidth         | mininum width of table                     | Array:Integer,Array:String            | null                     | 100, "20%", "40px", 10                |
+| features.sortable.key       | initial sorting key (enables sortable)     | String                                | null                     | "color"                               |
+| features.sortable.direction | ascending or descending                    | Boolean                               | false                    | true                                  |
+| features.checkable          | blank object (enables checkable)           | Object                                | null                     | {}                                    |
+| features.rearrangeable      | callback (enables rearrangeable)           | Function                              | null                     | (a,b) => alert(\`from ${a} to ${b}\`) |
+| features.autohide.container | DOM element (enables autohide)             | Element                               | null                     | bind:this={domElement},window         |
+| features.autohide.position  | current scroll position (set externally)   | Integer                               | 0                        | on:scroll=>{setPosition}              |
+| features.autohide.buffer    | extend area (multiple of container height) | Float                                 | 0                        | 2                                     |
+| callbacks.render.key        | cell                                       | rendering callback or SvelteComponent | Function,SvelteComponent | o => o.value                          | o => 'hello world'               |
+| callbacks.click.key         | cell                                       | cell or key click callback            | Function                 | null                                  | o => alert(\`${o.id} clicked!\`) |
+| id                          | id attribute of table                      | String                                | table                    | table-1                               |
+| class                       | class attribute of table                   | String                                |                          | table                                 |
+| id                          | style attribute of table                   | String                                |                          | background:red                        |
+| debug                       | debugging console log                      | Boolean                               | false                    | true                                  |
