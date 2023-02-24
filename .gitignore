@@ -1,4 +1,7 @@
-.DS_Store
+package-lock.json
 node_modules
-/dist/
+.env*
+!.env.example
+.DS_Store
+dist
 pnpm-lock.yaml
